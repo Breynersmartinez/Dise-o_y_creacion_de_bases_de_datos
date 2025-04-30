@@ -1,6 +1,4 @@
-¡Claro! Aprender SQL con MySQL es una excelente idea, ya que es uno de los sistemas de gestión de bases de datos relacionales más populares. Vamos a empezar con los fundamentos y luego practicaremos con ejercicios.
 
----
 
 ## **1. Fundamentos de SQL con MySQL**
 
@@ -220,12 +218,3 @@ GROUP BY l.titulo
 ORDER BY total_vendido DESC;
 ```
 
----
-
-### **¿Qué más te gustaría aprender?**
-- Consultas con `JOIN` (para unir tablas).
-- Funciones de agregación (`COUNT`, `SUM`, `AVG`).
-- Subconsultas.
-- Índices y optimización.
-
-¡Déjame saber en qué quieres profundizar! 😊

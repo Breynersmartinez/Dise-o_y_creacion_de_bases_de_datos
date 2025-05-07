@@ -129,52 +129,108 @@
     * Duracion
     * Patrocinadores
 
-    **relaciones cardinales** entre las entidades del sistema (uno a muchos, muchos a uno y muchos a muchos):
+
+
+###  RELACIONES UNO A MUCHOS (1\:N)
+
+1. **Proyecto -> Stand**
+
+   * Un proyecto puede tener **uno o varios stands**.
+   * Relación: `Proyecto (1) --- (N) Stand`
+
+2. **Proyecto -> Producto**
+
+   * Un proyecto puede tener **varios productos**.
+   * Relación: `Proyecto (1) --- (N) Producto`
+
+3. **Proyecto -> Evaluación**
+
+   * Un proyecto puede recibir **varias evaluaciones**.
+   * Relación: `Proyecto (1) --- (N) Evaluacion`
+
+4. **Proyecto → Equipo\_Proyecto**
+
+   * Un proyecto puede tener **muchos estudiantes** participando.
+   * Relación: `Proyecto (1) --- (N) Equipo_Proyecto`
+
+5. **Estudiante -> Equipo\_Proyecto**
+
+   * Un estudiante puede participar en **varios proyectos** (como líder o integrante).
+   * Relación: `Estudiante (1) --- (N) Equipo_Proyecto`
+
+6. **Jurado -> Evaluacion**
+
+   * Un jurado puede evaluar **muchos proyectos**.
+   * Relación: `Jurado (1) --- (N) Evaluacion`
+
+7. **Producto -> Transaccion**
+
+   * Un producto puede tener **varias transacciones**.
+   * Relación: `Producto (1) --- (N) Transaccion`
+
+8. **Stand -> Visita**
+
+   * Un stand puede recibir **muchas visitas**.
+   * Relación: `Stand (1) --- (N) Visita`
+
+9. **Visitante -> Visita**
+
+   * Un visitante puede hacer **varias visitas** a distintos stands.
+   * Relación: `Visitante (1) --- (N) Visita`
+
+10. **Visitante -> Encuesta**
+
+* Un visitante puede llenar **una o varias encuestas**.
+* Relación: `Visitante (1) --- (N) Encuesta`
+
+11. **Stand -> Evaluacion\_Stand**
+
+* Un stand puede tener **varias evaluaciones de stand**.
+* Relación: `Stand (1) --- (N) Evaluacion_Stand`
+
+12. **Stand -> Agenda**
+
+* Un stand puede tener **varias actividades en la agenda**.
+* Relación: `Stand (1) --- (N) Agenda`
+
+13. **Tematica -> Proyecto**
+
+* Una temática puede agrupar **muchos proyectos**.
+* Relación: `Tematica (1) --- (N) Proyecto`
+
+14. **Emprendimiento -> Proyecto**
+
+* Un emprendimiento puede tener **varios proyectos**.
+* Relación: `Emprendimiento (1) --- (N) Proyecto`
+
 ---
 
-### **RELACIONES UNO A MUCHOS (1\:N)**
+###  RELACIONES MUCHOS A UNO (N:1)
 
-* **Emprendimiento -> Proyecto**
-  Un emprendimiento puede tener **muchos proyectos**, pero un proyecto pertenece a un solo emprendimiento.
+Estas son simplemente las inversas de las anteriores (por ejemplo, muchos proyectos pertenecen a una temática).
+Ejemplo:
 
-* **Proyecto -> Producto**
-  Un proyecto puede tener **muchos productos**, pero cada producto es de **un solo proyecto**.
-
-* **Proyecto -> Evaluación**
-  Un proyecto puede tener muchas evaluaciones de diferentes jurados.
-
-* **Stand -> Agenda**
-  Un stand puede tener muchas actividades en su agenda.
-
-* **Visitante -> Encuesta / Visita**
-  Un visitante puede responder muchas encuestas y visitar varios stands.
-
----
-
-### **RELACIONES MUCHOS A UNO (N:1)**
-
-
+* **Stand -> Proyecto**
+* **Evaluacion -> Jurado**
 * **Producto -> Proyecto**
-* **Evaluación -> Proyecto**
-* **Agenda -> Stand**
-* **Visita -> Stand**
+* etc.
 
 ---
 
-### **RELACIONES MUCHOS A MUCHOS (M\:N)**
+###  RELACIONES MUCHOS A MUCHOS (N\:M)
 
-Estas relaciones normalmente necesitan una tabla intermedia (entidad débil o relación con atributos propios):
+1. **Proyecto <-> Estudiante** (a través de la tabla intermedia `Equipo_Proyecto`)
 
-* **Estudiante/Egresado <-> Proyecto (Equipo\_Proyecto)**
-  Un estudiante puede estar en varios proyectos, y un proyecto puede tener varios estudiantes.
-  Se modela con la entidad intermedia **Equipo\_Proyecto**, que incluye el atributo `Rol`.
+   * Un proyecto tiene varios estudiantes, y un estudiante puede participar en varios proyectos.
 
-* **Visitante <-> Stand (Visita)**
-  Un visitante puede visitar varios stands y un stand puede recibir varios visitantes.
-  Se resuelve con la entidad **Visita**, que además tiene `FechaHora`.
+2. **Stand <-> Visitante** (a través de `Visita`)
 
-* **Proyecto <-> Jurado (Evaluación)**
-  Cada jurado puede evaluar varios proyectos, y cada proyecto puede ser evaluado por varios jurados.
-  Se modela con la entidad **Evaluación**, que incluye `Puntaje` y `Comentarios`.
+   * Un visitante puede visitar varios stands, y un stand puede ser visitado por varios visitantes.
+
+3. **Stand <-> Evaluacion\_Stand**
+
+   * Si hay varios evaluadores por stand, también se puede modelar como muchos a muchos (aunque actualmente parece uno a muchos).
+
+
 
 

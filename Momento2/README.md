@@ -1,12 +1,27 @@
 ###  *ENTIDADES Y ATRIBUTOS*
 
-1. *Stand*
+1. *Evento*
+  * ID_evento
+  *  Fecha_inicio
+  *  Fecha_fin
+  *  Lugar
+  *  Nombre
+  *  Descripcion
+    
+
+2. *Patrocinador*
+   * ID_patrocinador
+   * nombre
+   * Contacto
+   * Aporte
+
+3.    *Stand*
 
    * ID\_Stand (PK)
    * Ubicacion
    * ID\_Proyecto (FK)
 
-2. *Proyecto*
+3. *Proyecto*
 
    * ID\_Proyecto (PK)
    * Nombre
@@ -15,28 +30,28 @@
    * ID\_Emprendimiento (FK)
    * ID\_Tematica (FK)
 
-3. *Equipo\_Proyecto*
+4. *Equipo\_Proyecto*
 
    * ID\_Equipo (PK)
    * ID\_Proyecto (FK)
    * ID\_Estudiante (FK)
    * Rol (líder/integrante)
 
-4. *Estudiante / Egresado*
+5. *Estudiante / Egresado*
 
    * ID\_Estudiante (PK)
    * Nombre
    * Correo
    * Tipo (Estudiante/Egresado)
 
-5. *Jurado*
+6. *Jurado*
 
    * ID\_Jurado (PK)
    * Nombre
    * Especialidad
    * Contacto
 
-6. *Evaluacion*
+7. *Evaluacion*
 
    * ID\_Evaluacion (PK)
    * ID\_Proyecto (FK)
@@ -44,7 +59,7 @@
    * Puntaje
    * Comentarios
 
-7. *Producto*
+8. *Producto*
 
    * ID\_Producto (PK)
    * Nombre
@@ -52,61 +67,61 @@
    * Disponibilidad
    * ID\_Proyecto (FK)
 
-8. *Transaccion*
+9. *Transaccion*
 
    * ID\_Transaccion (PK)
    * ID\_Producto (FK)
    * Cantidad
    * Valor
 
-9. *Visitante*
+10. *Visitante*
 
    * ID\_Visitante (PK)
    * Nombre
    * Correo
    * Tipo (Estudiante/Externo)
 
-10. *Visita*
+11. *Visita*
 
     * ID\_Visita (PK)
     * ID\_Visitante (FK)
     * ID\_Stand (FK)
     * FechaHora
 
-11. *Agenda*
+12. *Agenda*
 
     * ID\_Agenda (PK)
     * ID\_Stand (FK)
     * Actividad
     * Hora
 
-12. *Emprendimiento*
+13. *Emprendimiento*
 
     * ID\_Emprendimiento (PK)
     * Nombre
     * Tipo\_Negocio
     * Eslogan
 
-13. *Tematica*
+14. *Tematica*
 
     * ID\_Tematica (PK)
     * Nombre\_Tematica
 
-14. *Encuesta*
+15. *Encuesta*
 
     * ID\_Encuesta (PK)
     * ID\_Visitante (FK)
     * Satisfaccion
     * Comentarios
 
-15. *Evaluacion\_Stand*
+16. *Evaluacion\_Stand*
 
     * ID\_EvalStand (PK)
     * ID\_Stand (FK)
     * Comentarios
     * Puntaje
 
-16. *Logistica\_Evento*
+17. *Logistica\_Evento*
 
     * ID\_Evento (PK)
     * Fecha

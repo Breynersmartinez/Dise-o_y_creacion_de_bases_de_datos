@@ -131,106 +131,35 @@
 
 
 
-###  RELACIONES UNO A MUCHOS (1\:N)
 
-1. **Proyecto -> Stand**
 
-   * Un proyecto puede tener **uno o varios stands**.
-   * Relación: `Proyecto (1) --- (N) Stand`
 
-2. **Proyecto -> Producto**
 
-   * Un proyecto puede tener **varios productos**.
-   * Relación: `Proyecto (1) --- (N) Producto`
-
-3. **Proyecto -> Evaluación**
-
-   * Un proyecto puede recibir **varias evaluaciones**.
-   * Relación: `Proyecto (1) --- (N) Evaluacion`
-
-4. **Proyecto → Equipo\_Proyecto**
-
-   * Un proyecto puede tener **muchos estudiantes** participando.
-   * Relación: `Proyecto (1) --- (N) Equipo_Proyecto`
-
-5. **Estudiante -> Equipo\_Proyecto**
-
-   * Un estudiante puede participar en **varios proyectos** (como líder o integrante).
-   * Relación: `Estudiante (1) --- (N) Equipo_Proyecto`
-
-6. **Jurado -> Evaluacion**
-
-   * Un jurado puede evaluar **muchos proyectos**.
-   * Relación: `Jurado (1) --- (N) Evaluacion`
-
-7. **Producto -> Transaccion**
-
-   * Un producto puede tener **varias transacciones**.
-   * Relación: `Producto (1) --- (N) Transaccion`
-
-8. **Stand -> Visita**
-
-   * Un stand puede recibir **muchas visitas**.
-   * Relación: `Stand (1) --- (N) Visita`
-
-9. **Visitante -> Visita**
-
-   * Un visitante puede hacer **varias visitas** a distintos stands.
-   * Relación: `Visitante (1) --- (N) Visita`
-
-10. **Visitante -> Encuesta**
-
-* Un visitante puede llenar **una o varias encuestas**.
-* Relación: `Visitante (1) --- (N) Encuesta`
-
-11. **Stand -> Evaluacion\_Stand**
-
-* Un stand puede tener **varias evaluaciones de stand**.
-* Relación: `Stand (1) --- (N) Evaluacion_Stand`
-
-12. **Stand -> Agenda**
-
-* Un stand puede tener **varias actividades en la agenda**.
-* Relación: `Stand (1) --- (N) Agenda`
-
-13. **Tematica -> Proyecto**
-
-* Una temática puede agrupar **muchos proyectos**.
-* Relación: `Tematica (1) --- (N) Proyecto`
-
-14. **Emprendimiento -> Proyecto**
-
-* Un emprendimiento puede tener **varios proyectos**.
-* Relación: `Emprendimiento (1) --- (N) Proyecto`
+| Relación                                   | Tipo de Relación | Explicación                                                                     |
+| ------------------------------------------ | ---------------- | ------------------------------------------------------------------------------- |
+| **Evento - Logistica\_Evento**             | 1:1              | Un evento tiene una sola logística asociada (por ID\_Evento).                   |
+| **Evento - Patrocinador**                  | N\:M             | Varios patrocinadores pueden apoyar varios eventos (requiere tabla intermedia). |
+| **Patrocinador - Evento**                  | N\:M             | Mismo caso anterior.                                                            |
+| **Stand - Proyecto**                       | 1:1              | Un stand aloja un único proyecto.                                               |
+| **Proyecto - Stand**                       | 1:1 o 1\:N       | Un proyecto ocupa un solo stand (según tu modelo, parece ser 1:1).              |
+| **Proyecto - Evaluacion**                  | 1\:N             | Un proyecto puede tener varias evaluaciones de diferentes jurados.              |
+| **Jurado - Evaluacion**                    | 1\:N             | Un jurado puede evaluar varios proyectos.                                       |
+| **Proyecto - Producto**                    | 1\:N             | Un proyecto puede ofrecer varios productos.                                     |
+| **Producto - Transaccion**                 | 1\:N             | Un producto puede estar en varias transacciones.                                |
+| **Proyecto - Equipo\_Proyecto**            | 1\:N             | Un proyecto tiene varios integrantes en su equipo.                              |
+| **Estudiante/Egresado - Equipo\_Proyecto** | 1\:N             | Un estudiante puede participar en varios equipos de proyectos (si se permite).  |
+| **Proyecto - Emprendimiento**              | N:1              | Cada proyecto está ligado a un emprendimiento.                                  |
+| **Proyecto - Temática**                    | N:1              | Cada proyecto tiene una sola temática.                                          |
+| **Visitante - Visita**                     | 1\:N             | Un visitante puede realizar varias visitas a stands.                            |
+| **Stand - Visita**                         | 1\:N             | Un stand puede recibir muchas visitas.                                          |
+| **Stand - Agenda**                         | 1\:N             | Un stand puede tener varias actividades en su agenda.                           |
+| **Visitante - Encuesta**                   | 1\:N             | Un visitante puede llenar varias encuestas (si es el caso).                     |
+| **Stand - Evaluacion\_Stand**              | 1\:N             | Un stand puede recibir múltiples evaluaciones.                                  |
 
 ---
 
-###  RELACIONES MUCHOS A UNO (N:1)
+### 🔁 Ejemplo de relación N\:M (Evento – Patrocinador)
 
-Estas son simplemente las inversas de las anteriores (por ejemplo, muchos proyectos pertenecen a una temática).
-Ejemplo:
-
-* **Stand -> Proyecto**
-* **Evaluacion -> Jurado**
-* **Producto -> Proyecto**
-* etc.
-
----
-
-###  RELACIONES MUCHOS A MUCHOS (N\:M)
-
-1. **Proyecto <-> Estudiante** (a través de la tabla intermedia `Equipo_Proyecto`)
-
-   * Un proyecto tiene varios estudiantes, y un estudiante puede participar en varios proyectos.
-
-2. **Stand <-> Visitante** (a través de `Visita`)
-
-   * Un visitante puede visitar varios stands, y un stand puede ser visitado por varios visitantes.
-
-3. **Stand <-> Evaluacion\_Stand**
-
-   * Si hay varios evaluadores por stand, también se puede modelar como muchos a muchos (aunque actualmente parece uno a muchos).
-
-
+Requiere una tabla intermedia:
 
 

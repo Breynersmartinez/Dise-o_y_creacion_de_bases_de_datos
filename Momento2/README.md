@@ -128,3 +128,53 @@
     * Lugar
     * Duracion
     * Patrocinadores
+
+    **relaciones cardinales** entre las entidades del sistema (uno a muchos, muchos a uno y muchos a muchos):
+---
+
+### **RELACIONES UNO A MUCHOS (1\:N)**
+
+* **Emprendimiento -> Proyecto**
+  Un emprendimiento puede tener **muchos proyectos**, pero un proyecto pertenece a un solo emprendimiento.
+
+* **Proyecto -> Producto**
+  Un proyecto puede tener **muchos productos**, pero cada producto es de **un solo proyecto**.
+
+* **Proyecto -> Evaluación**
+  Un proyecto puede tener muchas evaluaciones de diferentes jurados.
+
+* **Stand -> Agenda**
+  Un stand puede tener muchas actividades en su agenda.
+
+* **Visitante -> Encuesta / Visita**
+  Un visitante puede responder muchas encuestas y visitar varios stands.
+
+---
+
+### **RELACIONES MUCHOS A UNO (N:1)**
+
+
+* **Producto -> Proyecto**
+* **Evaluación -> Proyecto**
+* **Agenda -> Stand**
+* **Visita -> Stand**
+
+---
+
+### **RELACIONES MUCHOS A MUCHOS (M\:N)**
+
+Estas relaciones normalmente necesitan una tabla intermedia (entidad débil o relación con atributos propios):
+
+* **Estudiante/Egresado <-> Proyecto (Equipo\_Proyecto)**
+  Un estudiante puede estar en varios proyectos, y un proyecto puede tener varios estudiantes.
+  Se modela con la entidad intermedia **Equipo\_Proyecto**, que incluye el atributo `Rol`.
+
+* **Visitante <-> Stand (Visita)**
+  Un visitante puede visitar varios stands y un stand puede recibir varios visitantes.
+  Se resuelve con la entidad **Visita**, que además tiene `FechaHora`.
+
+* **Proyecto <-> Jurado (Evaluación)**
+  Cada jurado puede evaluar varios proyectos, y cada proyecto puede ser evaluado por varios jurados.
+  Se modela con la entidad **Evaluación**, que incluye `Puntaje` y `Comentarios`.
+
+

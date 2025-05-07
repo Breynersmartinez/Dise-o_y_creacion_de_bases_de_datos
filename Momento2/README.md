@@ -21,7 +21,7 @@
    * Ubicacion
    * ID\_Proyecto (FK)
 
-3. *Proyecto*
+4.  *Proyecto*
 
    * ID\_Proyecto (PK)
    * Nombre
@@ -30,28 +30,28 @@
    * ID\_Emprendimiento (FK)
    * ID\_Tematica (FK)
 
-4. *Equipo\_Proyecto*
+5. *Equipo\_Proyecto*
 
    * ID\_Equipo (PK)
    * ID\_Proyecto (FK)
    * ID\_Estudiante (FK)
    * Rol (líder/integrante)
 
-5. *Estudiante / Egresado*
+6. *Estudiante / Egresado*
 
    * ID\_Estudiante (PK)
    * Nombre
    * Correo
    * Tipo (Estudiante/Egresado)
 
-6. *Jurado*
+7. *Jurado*
 
    * ID\_Jurado (PK)
    * Nombre
    * Especialidad
    * Contacto
 
-7. *Evaluacion*
+8. *Evaluacion*
 
    * ID\_Evaluacion (PK)
    * ID\_Proyecto (FK)
@@ -59,7 +59,7 @@
    * Puntaje
    * Comentarios
 
-8. *Producto*
+9. *Producto*
 
    * ID\_Producto (PK)
    * Nombre
@@ -67,14 +67,14 @@
    * Disponibilidad
    * ID\_Proyecto (FK)
 
-9. *Transaccion*
+10. *Transaccion*
 
    * ID\_Transaccion (PK)
    * ID\_Producto (FK)
    * Cantidad
    * Valor
 
-10. *Visitante*
+11. *Visitante*
 
    * ID\_Visitante (PK)
    * Nombre

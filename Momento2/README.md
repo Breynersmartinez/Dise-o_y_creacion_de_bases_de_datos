@@ -74,54 +74,54 @@
    * Cantidad
    * Valor
 
-11. *Visitante*
+11.  *Visitante*
 
    * ID\_Visitante (PK)
    * Nombre
    * Correo
    * Tipo (Estudiante/Externo)
 
-11. *Visita*
+12. *Visita*
 
     * ID\_Visita (PK)
     * ID\_Visitante (FK)
     * ID\_Stand (FK)
     * FechaHora
 
-12. *Agenda*
+13. *Agenda*
 
     * ID\_Agenda (PK)
     * ID\_Stand (FK)
     * Actividad
     * Hora
 
-13. *Emprendimiento*
+14. *Emprendimiento*
 
     * ID\_Emprendimiento (PK)
     * Nombre
     * Tipo\_Negocio
     * Eslogan
 
-14. *Tematica*
+15. *Tematica*
 
     * ID\_Tematica (PK)
     * Nombre\_Tematica
 
-15. *Encuesta*
+16. *Encuesta*
 
     * ID\_Encuesta (PK)
     * ID\_Visitante (FK)
     * Satisfaccion
     * Comentarios
 
-16. *Evaluacion\_Stand*
+17. *Evaluacion\_Stand*
 
     * ID\_EvalStand (PK)
     * ID\_Stand (FK)
     * Comentarios
     * Puntaje
 
-17. *Logistica\_Evento*
+18. *Logistica\_Evento*
 
     * ID\_Evento (PK)
     * Fecha

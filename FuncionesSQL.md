@@ -109,7 +109,119 @@ FROM empleados;
 SELECT COALESCE(telefono, 'No registrado') FROM clientes;
 ```
 
+
 ---
 
 
-¿Quieres que te arme un **mapa visual (tipo chuleta)** con todas estas funciones organizadas por categoría para llevarlo como apoyo rápido? 🚀
+
+### 🔹 1. Consultas básicas
+
+```sql
+SELECT * FROM products;     -- ver toda la tabla
+SELECT product_name FROM products;  -- solo una columna
+SELECT * FROM products LIMIT 10;   -- limitar resultados
+```
+
+👉 *Ojo:* pusiste `PRODCUTS` en algunos lados, el correcto es **PRODUCTS**.
+
+---
+
+### 🔹 2. Conteos
+
+```sql
+SELECT COUNT(1) FROM employees;   -- cuántos registros tiene employees
+SELECT COUNT(1) FROM products;    -- cuántos productos hay
+```
+
+👉 *Tip:* `COUNT(1)`, `COUNT(*)` o `COUNT(columna)` sirven parecido, pero cada uno tiene su matiz.
+
+---
+
+### 🔹 3. JOIN entre tablas
+
+```sql
+SELECT p.product_name, c.category_name
+FROM products p
+INNER JOIN categories c 
+    ON p.category_id = c.category_id
+WHERE UPPER(p.product_name) = 'TOFU';
+```
+
+👉 Aquí usaste `UPPER()` para no depender de mayúsculas/minúsculas, ¡muy bien!
+
+---
+
+### 🔹 4. Funciones de agregación
+
+```sql
+SELECT MIN(unit_price) AS valor_minimo, 
+       MAX(unit_price) AS valor_maximo, 
+       AVG(unit_price) AS valor_promedio,
+       ROUND(AVG(unit_price)::NUMERIC, 4) AS valor_promedio_redondeado
+FROM products;
+```
+
+---
+
+### 🔹 5. Filtros con `WHERE` e `IN`
+
+```sql
+SELECT product_name, units_in_stock 
+FROM products 
+WHERE units_in_stock IN (120, 22, 24, 35, 42, 9);
+```
+
+---
+
+### 🔹 6. SUMA de productos en bodega
+
+```sql
+SELECT SUM(units_in_stock) AS "productos en bodega"
+FROM products;
+```
+
+---
+
+### 🔹 7. LIKE para patrones de texto
+
+```sql
+-- Contienen la letra S
+SELECT * FROM products WHERE product_name LIKE '%s%';
+
+-- Terminan en N
+SELECT * FROM products WHERE product_name LIKE '%n';
+
+-- Contienen "cho"
+SELECT * FROM products WHERE product_name LIKE '%cho%';
+```
+
+👉 *Ojo:* si quisieras **productos que empiezan por S**, sería:
+
+```sql
+SELECT * FROM products WHERE product_name LIKE 'S%';
+```
+
+---
+
+### 🔹 8. Fechas y rangos
+
+```sql
+SELECT customer_id, order_date, freight, order_id
+FROM orders
+WHERE customer_id = 'VICTE'
+  AND order_date BETWEEN '1996-01-01' AND '1997-12-31';
+```
+
+---
+
+## 📌 Resumen
+
+* **Básico:** `SELECT`, `WHERE`, `LIMIT`, `COUNT`, `SUM`.
+* **Texto:** `LIKE`, `UPPER`.
+* **Agregación:** `AVG`, `MIN`, `MAX`, `ROUND`.
+* **JOINS:** combinar tablas.
+* **Fechas:** `BETWEEN`.
+
+Con esto ya tienes el **kit de supervivencia SQL** 🛠️ para cualquier clase inicial.
+
+---

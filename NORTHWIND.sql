@@ -210,6 +210,7 @@ CREATE TABLE categories (
     picture bytea
 );
 
+select*from categories;
 
 --
 -- Name: customer_customer_demo; Type: TABLE; Schema: public; Owner: -; Tablespace: 

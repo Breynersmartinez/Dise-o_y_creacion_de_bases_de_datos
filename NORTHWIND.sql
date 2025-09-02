@@ -82,8 +82,34 @@ SELECT POSITION('a' IN last_name) AS Apellido FROM employees;
 
 SELECT SUBSTRING(company_name for 3) from customers;
 
--- 
 
+
+-- 14. Tabla: products
+-- Pregunta: Muestre el precio unitario redondeado hacia arriba (techo) para todos los
+-- productos.
+
+
+
+-- 15. Tabla: products
+-- Pregunta: Muestre el precio unitario redondeado hacia abajo (piso) para todos los
+-- productos.
+
+
+
+
+-- 16. Tabla: employees
+-- Pregunta: ¿Cuántos empleados tienen nombres que empiecen con la letra 'A'?
+
+
+
+-- 17. Tabla: products
+-- Pregunta: Muestre el nombre del producto y su precio unitario redondeado a 1
+-- decimal, solo para productos cuyo precio sea mayor a 20
+
+
+--  18. Tabla: customers
+-- Pregunta: Muestre las compañías cuyo nombre contenga "Restaurant" o "Café",
+-- mostrando el resultado en mayúsculas.
 
 
 

@@ -22,8 +22,12 @@ select min(unit_price) as min_unit_price from products;
 select AVG(unit_price)  as average_unit_price from products;
 
 -- 5. Tabla: employees
--- Pregunta: Muestre los nombres y apellidos de todos los empleados en mayúsculas.
-select UPPER(last_name, first_name) from employees;
+-- Pregunta: Muestre los nombres y apellidos de todos select UPPER(last_name, first_name) from employees;los empleados en mayúsculas.
+SELECT UPPER(last_name, first_name) FROM employees;
+
+--  6. Tabla: customers
+--  Pregunta: Muestre los nombres de las compañías de todos los clientes en minúsculas.
+SELECT
 
   
 -- consulta básica

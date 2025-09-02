@@ -3,23 +3,23 @@
  --  1. Tabla: products
 -- Pregunta: ¿Cuántos productos hay en total en la base de datos?
 
-select count(1) from  products;
+SELECT COUNT(1) FROM  products;
 
 -- 2. Tabla: products
 -- Pregunta: ¿Cuál es el precio unitario más alto de todos los productos?
-select max(unit_price) as max_unit_price from  products;
+SELECT MAX(unit_price) AS max_unit_price FROM  products;
 
 
 -- Tabla: products
 -- Pregunta: ¿Cuál es el precio unitario más bajo de todos los productos?
 
-select min(unit_price) as min_unit_price from products;
+SELECT MIN(unit_price) AS min_unit_price FROM products;
 
 --  4. Tabla: products
 -- Pregunta: ¿Cuál es el precio promedio de todos los productos? Redondee el resultado
 -- a 2 decimales.
 
-select AVG(unit_price)  as average_unit_price from products;
+SELECT AVG(unit_price)  AS average_unit_price FROM products;
 
 -- 5. Tabla: employees
 -- Pregunta: Muestre los nombres y apellidos de todos select UPPER(last_name, first_name) from employees;los empleados en mayúsculas.
@@ -47,16 +47,46 @@ WHERE country IN ('USA', 'UK');
 
 -- 9. Tabla: products
 -- Pregunta: Muestre todos los productos cuyo precio unitario esté entre 10 y 50 dólares.
+SELECT product_name, unit_price
+FROM products
+WHERE unit_price BETWEEN 10 AND 50
+ORDER BY 2 DESC;
+
+
 
 
 -- 10. Tabla: order_details
 -- Pregunta: ¿Cuál es la suma total de todas las cantidades vendidas?
+
+SELECT SUM(quantity )  FROM order_details;
+
+-- 11. Tabla: customers
+-- Pregunta: Reemplace todas las ocurrencias de "Ltd" por "Limited" en los nombres de
+-- las compañías.
+
+
+
+-- 12. Tabla: employees
+-- Pregunta: ¿En qué posición aparece la letra 'a' en el apellido de cada empleado?
+
 
 
 
   
 -- consulta básica
 select * from products;
+
+
+
+-- 13. Tabla: customers
+-- Pregunta: Muestre los primeros 3 caracteres del nombre de cada compañía.
+
+
+-- 
+
+
+
+
 
 -- cuántas categorías tengo en la bd
 select count(1) from employees;   -- cuántos registros tiene employees

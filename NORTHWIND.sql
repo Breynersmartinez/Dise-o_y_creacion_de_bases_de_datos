@@ -60,33 +60,35 @@ ORDER BY 2 DESC;
 
 SELECT SUM(quantity )  FROM order_details;
 
+
 -- 11. Tabla: customers
 -- Pregunta: Reemplace todas las ocurrencias de "Ltd" por "Limited" en los nombres de
 -- las compañías.
 
+SELECT REPLACE ('company_name', 'Ltd', 'Limited')
+FROM customers ;
 
 
 -- 12. Tabla: employees
 -- Pregunta: ¿En qué posición aparece la letra 'a' en el apellido de cada empleado?
 
+SELECT POSITION('a' IN last_name) AS Apellido FROM employees;
 
 
 
   
--- consulta básica
-select * from products;
-
-
-
 -- 13. Tabla: customers
 -- Pregunta: Muestre los primeros 3 caracteres del nombre de cada compañía.
 
+SELECT SUBSTRING(company_name for 3) from customers;
 
 -- 
 
 
 
 
+-- consulta básica
+select company_name from customers;
 
 -- cuántas categorías tengo en la bd
 select count(1) from employees;   -- cuántos registros tiene employees

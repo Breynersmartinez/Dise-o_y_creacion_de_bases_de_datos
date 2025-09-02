@@ -23,11 +23,36 @@ select AVG(unit_price)  as average_unit_price from products;
 
 -- 5. Tabla: employees
 -- Pregunta: Muestre los nombres y apellidos de todos select UPPER(last_name, first_name) from employees;los empleados en mayúsculas.
-SELECT UPPER(last_name, first_name) FROM employees;
+SELECT UPPER(last_name) AS Apellidos , UPPER(first_name) as nombres FROM employees;
 
 --  6. Tabla: customers
 --  Pregunta: Muestre los nombres de las compañías de todos los clientes en minúsculas.
-SELECT
+SELECT LOWER(company_name) As Nombre_De_la_Compañia FROM customers;
+
+-- 7. Tabla: products
+-- Pregunta: Muestre todos los productos cuyo nombre contenga la palabra "Cheese".
+SELECT  product_name as Nombre_producto
+FROM products 
+WHERE product_name LIKE '%Cheese%';
+
+
+
+
+-- 8. Tabla: employees
+-- Pregunta: Muestre los empleados cuyos países sean 'USA', 'UK' o 'France'.
+SELECT last_name AS Apellidos, first_name AS Nombres, country AS pais
+FROM Employees 
+WHERE country IN ('USA', 'UK');
+
+
+-- 9. Tabla: products
+-- Pregunta: Muestre todos los productos cuyo precio unitario esté entre 10 y 50 dólares.
+
+
+-- 10. Tabla: order_details
+-- Pregunta: ¿Cuál es la suma total de todas las cantidades vendidas?
+
+
 
   
 -- consulta básica
@@ -4077,4 +4102,3 @@ ALTER TABLE ONLY employees
 --
 -- PostgreSQL database dump complete
 --
-

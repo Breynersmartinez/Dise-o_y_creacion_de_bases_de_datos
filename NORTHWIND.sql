@@ -136,7 +136,7 @@ WHERE company_name LIKE '%Restaurant%'
 --  Pregunta: ¿Cuál es el valor promedio del flete (freight) para órdenes cuyo flete esté
 --  entre  y ? Redondee a  decimales.
 
-SELECT ROUND(AVG(freight)::NUMERIC, 2)
+SELECT ROUND(AVG(freight)::NUMERIC, 2) AS promedio_flete
 FROM orders
 WHERE freight  BETWEEN 1 AND 100;
 
@@ -161,7 +161,10 @@ from employees;
 --  Pregunta: ¿Cuántas órdenes ha procesado cada empleado? Muestre el nombre
 --  completo del empleado y el total de órdenes
 
-
+SELECT  e.last_name ||'  '|| e.first_name AS nombre_completo, COUNT(o.order_id)
+FROM employees e
+INNER JOIN orders o ON e.employee_id = o.employee_id
+GROUP BY e.last_name, e.first_name;
 
 
 
@@ -169,9 +172,10 @@ from employees;
 --  Pregunta: Muestre el nombre de los productos y su categoría, solo para productos
 --  cuyo precio unitario sea mayor al promedio general
 
-
-
-
+SELECT p.product_name, p.unit_price AS Productos_con_promedio_mayor, c.category_name
+FROM products p
+INNER JOIN categories c on p.category_id = c.category_id
+WHERE P.unit_price > (SELECT AVG(unit_price) FROM products);
 
 
 
@@ -179,13 +183,31 @@ from employees;
 --  Pregunta: ¿Cuáles son los nombres de las compañías que han realizado más de
 -- órdenes
 
+SELECT c.company_name AS nombre_compañia, COUNT(o.order_id)
+FROM customers c
+INNER JOIN orders o on c.customer_id = o.customer_id
+GROUP BY c.company_name
+HAVING COUNT(o.order_id) > 5;
 
 
 
 -- 24 . Tablas: products, suppliers, categories
 --  Pregunta: Muestre el nombre del producto, proveedor y categoría para productos
 --  cuyo nombre contenga "Chocolate" y cuyo proveedor sea de "Germany"
+SELECT p.product_name AS nombre_producto,
+       s.company_name AS nombre_proveedor,
+       c.category_name AS nombre_categoria
+FROM products p
+INNER JOIN categories c ON p.category_id = c.category_id
+INNER JOIN suppliers s ON  p.supplier_id = s.supplier_id
+WHERE   p.product_name   ILIKE   '%Chocolate%'
+ AND   s.country  =  'Germany';
 
+-- NO HAY productos
+--  cuyo nombre contenga "Chocolate" y cuyo proveedor sea de "Germany"
+
+
+SELECT product_name from products;
 
 
 
@@ -193,12 +215,21 @@ from employees;
 --  Pregunta: ¿Cuál es el valor promedio del flete por país de destino? Muestre solo países
 --  con promedio mayor a .
 
-
+SELECT c.country, ROUND(AVG(o.freight)::NUMERIC, 2) AS promedio_flete
+FROM orders o
+JOIN customers c ON o.customer_id = c.customer_id
+GROUP BY c.country
+HAVING AVG(o.freight) > 50;
 
 -- 26. Tablas: order_details, products
 --  Pregunta: ¿Cuál es el producto más vendido en términos de cantidad total? Muestre el
 --  nombre del producto y la cantidad total vendida.
-
+SELECT p.product_name, SUM(od.quantity) AS total_vendido
+FROM order_details od
+         JOIN products p ON od.product_id = p.product_id
+GROUP BY p.product_name
+ORDER BY total_vendido DESC
+LIMIT 1;
 
 
 
@@ -207,13 +238,24 @@ from employees;
 --  fecha de la orden, para órdenes realizadas en el año
 -- 1997.
 
-
+SELECT e.first_name || ' ' || e.last_name AS empleado,
+       c.company_name, o.order_date
+FROM orders o
+         JOIN employees e ON o.employee_id = e.employee_id
+         JOIN customers c ON o.customer_id = c.customer_id
+WHERE EXTRACT(YEAR FROM o.order_date) = 1997;
 
 -- 28. Tablas: products, order_details
 --  Pregunta: ¿Cuáles son los  productos con mayor ingreso total (precio * cantidad)?
 --  Muestre nombre del producto e ingreso total redondeado.
 
-
+SELECT p.product_name,
+       ROUND(SUM(od.unit_price * od.quantity)::NUMERIC, 2) AS ingreso_total
+FROM order_details od
+         JOIN products p ON od.product_id = p.product_id
+GROUP BY p.product_name
+ORDER BY ingreso_total DESC
+LIMIT 5;
 
 
 -- 29 . Tablas: customers, orders
@@ -222,6 +264,10 @@ from employees;
 
 
 
+SELECT first_name, last_name
+FROM employees
+WHERE first_name LIKE 'A%'
+  AND last_name LIKE '%s';
 
 
 
@@ -230,7 +276,14 @@ from employees;
 --  Pregunta: Muestre el nombre del proveedor, cantidad de productos que suministra y
 --  el precio promedio de sus productos, solo para proveedores que suministren
 --  productos de la categoría "Beverages"
-
+SELECT s.company_name AS proveedor,
+       COUNT(p.product_id) AS total_productos,
+       ROUND(AVG(p.unit_price)::NUMERIC, 2) AS precio_promedio
+FROM suppliers s
+         JOIN products p ON s.supplier_id = p.supplier_id
+         JOIN categories c ON p.category_id = c.category_id
+WHERE c.category_name = 'Beverages'
+GROUP BY s.company_name;
 
 
 

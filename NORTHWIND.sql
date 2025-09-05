@@ -41,7 +41,7 @@ SELECT  product_name as Nombre_producto
 FROM products 
 WHERE product_name ILIKE '%Cheese%';
 
-
+-- No hay productos cuyo nombre contenga la palabra "Cheese"
 
 
 -- 8. Tabla: employees
@@ -125,7 +125,10 @@ WHERE  unit_price > 20;
 --  mostrando el resultado en mayúsculas
 
 
-
+SELECT UPPER(company_name) AS Nombre_compañia
+FROM customers
+WHERE company_name LIKE '%Restaurant%'
+   OR company_name LIKE '%Café%';
 
 
 
@@ -133,13 +136,22 @@ WHERE  unit_price > 20;
 --  Pregunta: ¿Cuál es el valor promedio del flete (freight) para órdenes cuyo flete esté
 --  entre  y ? Redondee a  decimales.
 
-
+SELECT ROUND(AVG(freight)::NUMERIC, 2)
+FROM orders
+WHERE freight  BETWEEN 1 AND 100;
 
 -- 20. Tabla: employees
 --  Pregunta: Muestre el nombre completo de los empleados (nombre + apellido) en
 --  minúsculas, solo para aquellos cuyo apellido termine en 's'.
+SELECT  LOWER(last_name ||' '|| first_name) AS NOMBRE_COMPLETO
+FROM employees
+WHERE  last_name LIKE  '%s';
+
+-- No hay empleados cuyo nombre termine en s
 
 
+select last_name, first_name
+from employees;
 
 -- PARTE II: CONSULTAS CON MÚLTIPLES TABLAS (preguntas)
 

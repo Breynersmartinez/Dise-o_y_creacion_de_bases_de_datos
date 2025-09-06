@@ -1,129 +1,158 @@
 --PARTE I: CONSULTAS CON UNA SOLA TABLA (20 preguntas)
-
- --  1. Tabla: products
--- Pregunta: ¿Cuántos productos hay en total en la base de datos?
-
+/*
+   1. Tabla: products
+ Pregunta: ¿Cuántos productos hay en total en la base de datos?
+*/
 SELECT COUNT(1)
 FROM  products;
+/*
+2. Tabla: products
+Pregunta: ¿Cuál es el precio unitario más alto de todos los productos?
+ */
 
--- 2. Tabla: products
--- Pregunta: ¿Cuál es el precio unitario más alto de todos los productos?
 SELECT MAX(unit_price) AS max_unit_price
 FROM  products;
 
-
--- 3. Tabla: products
--- Pregunta: ¿Cuál es el precio unitario más bajo de todos los productos?
+/*
+3. Tabla: products
+Pregunta: ¿Cuál es el precio unitario más bajo de todos los productos?
+ */
 
 SELECT MIN(unit_price) AS min_unit_price
 FROM products;
 
---  4. Tabla: products
--- Pregunta: ¿Cuál es el precio promedio de todos los productos? Redondee el resultado
--- a 2 decimales.
+/*
+4. Tabla: products
+Pregunta: ¿Cuál es el precio promedio de todos los productos? Redondee el resultado
+a 2 decimales.
+ */
 
 SELECT ROUND(AVG(unit_price)::NUMERIC, 2)  AS average_unit_price
 FROM products;
 
--- 5. Tabla: employees
--- Pregunta: Muestre los nombres y apellidos de todos select UPPER(last_name, first_name) from employees;los empleados en mayúsculas.
+/*
+5. Tabla: employees
+Pregunta: Muestre los nombres y apellidos de todos los empleados en mayúsculas.
+ */
+
 SELECT UPPER(last_name) AS Apellidos , UPPER(first_name) as nombres
 FROM employees;
 
---  6. Tabla: customers
---  Pregunta: Muestre los nombres de las compañías de todos los clientes en minúsculas.
+/*
+6. Tabla: customers
+Pregunta: Muestre los nombres de las compañías de todos los clientes en minúsculas.
+ */
+
 SELECT LOWER(company_name) As Nombre_De_la_Compañia
 FROM customers;
 
--- 7. Tabla: products
--- Pregunta: Muestre todos los productos cuyo nombre contenga la palabra "Cheese".
+/*
+7. Tabla: products
+Pregunta: Muestre todos los productos cuyo nombre contenga la palabra "Cheese".
+ */
+
 SELECT  product_name as Nombre_producto
 FROM products 
 WHERE product_name ILIKE '%Cheese%';
 
 -- No hay productos cuyo nombre contenga la palabra "Cheese"
 
+/*
+8. Tabla: employees
+Pregunta: Muestre los empleados cuyos países sean 'USA', 'UK' o 'France'.
+ */
 
--- 8. Tabla: employees
--- Pregunta: Muestre los empleados cuyos países sean 'USA', 'UK' o 'France'.
 SELECT last_name AS Apellidos, first_name AS Nombres, country AS pais
 FROM Employees 
-WHERE country IN ('USA', 'UK');
+WHERE country IN ('USA', 'UK', 'France');
 
+/*
+9. Tabla: products
+Pregunta: Muestre todos los productos cuyo precio unitario esté entre 10 y 50 dólares.
+ */
 
--- 9. Tabla: products
--- Pregunta: Muestre todos los productos cuyo precio unitario esté entre 10 y 50 dólares.
 SELECT product_name, unit_price
 FROM products
 WHERE unit_price BETWEEN 10 AND 50;
 
-
--- 10. Tabla: order_details
--- Pregunta: ¿Cuál es la suma total de todas las cantidades vendidas?
+/*
+10. Tabla: order_details
+Pregunta: ¿Cuál es la suma total de todas las cantidades vendidas?
+ */
 
 SELECT SUM(quantity )  AS Total_cantidades
 FROM order_details;
 
+/*
+11. Tabla: customers
+Pregunta: Reemplace todas las ocurrencias de "Ltd" por "Limited" en los nombres de
+las compañías.
+ */
 
--- 11. Tabla: customers
--- Pregunta: Reemplace todas las ocurrencias de "Ltd" por "Limited" en los nombres de
--- las compañías.
-
-SELECT REPLACE ('company_name', 'Ltd', 'Limited') AS compañia_modific
+SELECT REPLACE (company_name, 'Ltd', 'Limited') AS compañia_modific
 FROM customers ;
 
-
--- 12. Tabla: employees
--- Pregunta: ¿En qué posición aparece la letra 'a' en el apellido de cada empleado?
+/*
+12. Tabla: employees
+Pregunta: ¿En qué posición aparece la letra 'a' en el apellido de cada empleado?
+ */
 
 SELECT POSITION('a' IN last_name) AS Apellido
 FROM employees;
 
 
 
-  
--- 13. Tabla: customers
--- Pregunta: Muestre los primeros 3 caracteres del nombre de cada compañía.
+/*
+13. Tabla: customers
+Pregunta: Muestre los primeros 3 caracteres del nombre de cada compañía.
+ */
 
 SELECT SUBSTRING(company_name FROM 1 FOR 3)
 FROM customers;
 
 
-
--- 14. Tabla: products
--- Pregunta: Muestre el precio unitario redondeado hacia arriba (techo) para todos los
--- productos.
+/*
+14. Tabla: products
+Pregunta: Muestre el precio unitario redondeado hacia arriba (techo) para todos los
+productos.
+ */
 
 SELECT product_name, CEIL(unit_price) AS producto_redondeado_hacia_arriba
 FROM products;
 
--- 15. Tabla: products
--- Pregunta: Muestre el precio unitario redondeado hacia abajo (piso) para todos los
--- productos.
+/*
+15. Tabla: products
+Pregunta: Muestre el precio unitario redondeado hacia abajo (piso) para todos los
+productos.
+ */
+
 SELECT product_name, FLOOR(unit_price) AS producto_redondeado_hacia_abajo
 FROM products;
 
 
-
--- 16. Tabla: employees
--- Pregunta: ¿Cuántos empleados tienen nombres que empiecen con la letra 'A'?
+/*
+16. Tabla: employees
+Pregunta: ¿Cuántos empleados tienen nombres que empiecen con la letra 'A'?
+ */
 SELECT count(*)
 FROM employees
 WHERE first_name LIKE 'A%';
 
+/*
+ 17. Tabla: products
+ Pregunta: Muestre el nombre del producto y su precio unitario redondeado a 1
+ decimal, solo para productos cuyo precio sea mayor a 20
+ */
 
--- 17. Tabla: products
--- Pregunta: Muestre el nombre del producto y su precio unitario redondeado a 1
--- decimal, solo para productos cuyo precio sea mayor a 20
 SELECT product_name, ROUND(unit_price::NUMERIC, 1) AS precio_redondeado
 FROM products
 WHERE  unit_price > 20;
 
-
--- 18. Tabla: customers
---  Pregunta: Muestre las compañías cuyo nombre contenga "Restaurant" o "Café",
---  mostrando el resultado en mayúsculas
-
+/*
+ 18. Tabla: customers
+ Pregunta: Muestre las compañías cuyo nombre contenga "Restaurant" o "Café",
+ mostrando el resultado en mayúsculas
+*/
 
 SELECT UPPER(company_name) AS Nombre_compañia
 FROM customers
@@ -131,18 +160,24 @@ WHERE company_name LIKE '%Restaurant%'
    OR company_name LIKE '%Café%';
 
 
+/*
+19. Tabla: orders
+Pregunta: ¿Cuál es el valor promedio del flete (freight) para órdenes cuyo flete esté
+entre  y ? Redondee a  decimales.
 
--- 19. Tabla: orders
---  Pregunta: ¿Cuál es el valor promedio del flete (freight) para órdenes cuyo flete esté
---  entre  y ? Redondee a  decimales.
+ */
 
 SELECT ROUND(AVG(freight)::NUMERIC, 2) AS promedio_flete
 FROM orders
 WHERE freight  BETWEEN 1 AND 100;
 
--- 20. Tabla: employees
---  Pregunta: Muestre el nombre completo de los empleados (nombre + apellido) en
---  minúsculas, solo para aquellos cuyo apellido termine en 's'.
+/*
+20. Tabla: employees
+Pregunta: Muestre el nombre completo de los empleados (nombre + apellido) en
+minúsculas, solo para aquellos cuyo apellido termine en 's'.
+ */
+
+
 SELECT  LOWER(last_name ||' '|| first_name) AS NOMBRE_COMPLETO
 FROM employees
 WHERE  last_name LIKE  '%s';
@@ -156,10 +191,11 @@ from employees;
 -- PARTE II: CONSULTAS CON MÚLTIPLES TABLAS (preguntas)
 
 
-
---  21. Tablas: employees, orders
---  Pregunta: ¿Cuántas órdenes ha procesado cada empleado? Muestre el nombre
---  completo del empleado y el total de órdenes
+/*
+21. Tablas: employees, orders
+Pregunta: ¿Cuántas órdenes ha procesado cada empleado? Muestre el nombre
+completo del empleado y el total de órdenes
+ */
 
 SELECT  e.last_name ||'  '|| e.first_name AS nombre_completo, COUNT(o.order_id)
 FROM employees e
@@ -167,10 +203,11 @@ INNER JOIN orders o ON e.employee_id = o.employee_id
 GROUP BY e.last_name, e.first_name;
 
 
-
--- 22. Tablas: products, categories
---  Pregunta: Muestre el nombre de los productos y su categoría, solo para productos
---  cuyo precio unitario sea mayor al promedio general
+/*
+22. Tablas: products, categories
+Pregunta: Muestre el nombre de los productos y su categoría, solo para productos
+cuyo precio unitario sea mayor al promedio general
+ */
 
 SELECT p.product_name, p.unit_price AS Productos_con_promedio_mayor, c.category_name
 FROM products p
@@ -178,10 +215,11 @@ INNER JOIN categories c on p.category_id = c.category_id
 WHERE P.unit_price > (SELECT AVG(unit_price) FROM products);
 
 
-
--- 23. Tablas: customers, orders
---  Pregunta: ¿Cuáles son los nombres de las compañías que han realizado más de
--- órdenes
+/*
+23. Tablas: customers, orders
+Pregunta: ¿Cuáles son los nombres de las compañías que han realizado más de
+órdenes
+ */
 
 SELECT c.company_name AS nombre_compañia, COUNT(o.order_id)
 FROM customers c
@@ -190,10 +228,13 @@ GROUP BY c.company_name
 HAVING COUNT(o.order_id) > 5;
 
 
+/*
+24 . Tablas: products, suppliers, categories
+Pregunta: Muestre el nombre del producto, proveedor y categoría para productos
+cuyo nombre contenga "Chocolate" y cuyo proveedor sea de "Germany"
 
--- 24 . Tablas: products, suppliers, categories
---  Pregunta: Muestre el nombre del producto, proveedor y categoría para productos
---  cuyo nombre contenga "Chocolate" y cuyo proveedor sea de "Germany"
+ */
+
 SELECT p.product_name AS nombre_producto,
        s.company_name AS nombre_proveedor,
        c.category_name AS nombre_categoria
@@ -210,10 +251,12 @@ WHERE   p.product_name   ILIKE   '%Chocolate%'
 SELECT product_name from products;
 
 
+/*
+25 . Tablas: orders, customers
+Pregunta: ¿Cuál es el valor promedio del flete por país de destino? Muestre solo países
+con promedio mayor a .
 
--- 25 . Tablas: orders, customers
---  Pregunta: ¿Cuál es el valor promedio del flete por país de destino? Muestre solo países
---  con promedio mayor a .
+ */
 
 SELECT c.country, ROUND(AVG(o.freight)::NUMERIC, 2) AS promedio_flete
 FROM orders o
@@ -221,9 +264,11 @@ JOIN customers c ON o.customer_id = c.customer_id
 GROUP BY c.country
 HAVING AVG(o.freight) > 50;
 
--- 26. Tablas: order_details, products
---  Pregunta: ¿Cuál es el producto más vendido en términos de cantidad total? Muestre el
---  nombre del producto y la cantidad total vendida.
+/*
+26. Tablas: order_details, products
+Pregunta: ¿Cuál es el producto más vendido en términos de cantidad total? Muestre el
+nombre del producto y la cantidad total vendida.
+ */
 SELECT p.product_name, SUM(od.quantity) AS total_vendido
 FROM order_details od
          JOIN products p ON od.product_id = p.product_id
@@ -232,11 +277,12 @@ ORDER BY total_vendido DESC
 LIMIT 1;
 
 
-
-    -- 27. Tablas: employees, orders, customers
---  Pregunta: Muestre el nombre del empleado, nombre de la compañía del cliente y
---  fecha de la orden, para órdenes realizadas en el año
--- 1997.
+/*
+27. Tablas: employees, orders, customers
+Pregunta: Muestre el nombre del empleado, nombre de la compañía del cliente y
+fecha de la orden, para órdenes realizadas en el año
+1997.
+ */
 
 SELECT e.first_name || ' ' || e.last_name AS empleado,
        c.company_name, o.order_date
@@ -245,9 +291,11 @@ FROM orders o
          JOIN customers c ON o.customer_id = c.customer_id
 WHERE EXTRACT(YEAR FROM o.order_date) = 1997;
 
--- 28. Tablas: products, order_details
---  Pregunta: ¿Cuáles son los  productos con mayor ingreso total (precio * cantidad)?
---  Muestre nombre del producto e ingreso total redondeado.
+/*
+28. Tablas: products, order_details
+Pregunta: ¿Cuáles son los  productos con mayor ingreso total (precio * cantidad)?
+Muestre nombre del producto e ingreso total redondeado.
+ */
 
 SELECT p.product_name,
        ROUND(SUM(od.unit_price * od.quantity)::NUMERIC, 2) AS ingreso_total
@@ -257,10 +305,11 @@ GROUP BY p.product_name
 ORDER BY ingreso_total DESC
 LIMIT 5;
 
-
--- 29 . Tablas: customers, orders
---  Pregunta: ¿Cuáles son los nombres y apellidos de los empleados cuyo nombre inicia
---  con la letra 'A' y su apellido termina con la letra 's'?
+/*
+29 . Tablas: customers, orders
+Pregunta: ¿Cuáles son los nombres y apellidos de los empleados cuyo nombre inicia
+con la letra 'A' y su apellido termina con la letra 's'?
+ */
 
 
 
@@ -268,14 +317,17 @@ SELECT first_name, last_name
 FROM employees
 WHERE first_name LIKE 'A%'
   AND last_name LIKE '%s';
+-- no
 
 
 
+/*
+ 30 . Tablas: suppliers, products, categories
+  Pregunta: Muestre el nombre del proveedor, cantidad de productos que suministra y
+ el precio promedio de sus productos, solo para proveedores que suministren
+ productos de la categoría "Beverages"
+ */
 
--- 30 . Tablas: suppliers, products, categories
---  Pregunta: Muestre el nombre del proveedor, cantidad de productos que suministra y
---  el precio promedio de sus productos, solo para proveedores que suministren
---  productos de la categoría "Beverages"
 SELECT s.company_name AS proveedor,
        COUNT(p.product_id) AS total_productos,
        ROUND(AVG(p.unit_price)::NUMERIC, 2) AS precio_promedio

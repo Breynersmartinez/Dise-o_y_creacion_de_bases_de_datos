@@ -5,6 +5,8 @@
 */
 SELECT COUNT(1)
 FROM  products;
+
+
 /*
 2. Tabla: products
 Pregunta: ¿Cuál es el precio unitario más alto de todos los productos?
@@ -134,7 +136,7 @@ FROM products;
 16. Tabla: employees
 Pregunta: ¿Cuántos empleados tienen nombres que empiecen con la letra 'A'?
  */
-SELECT count(*)
+SELECT count(*) AS empleados
 FROM employees
 WHERE first_name LIKE 'A%';
 
@@ -163,7 +165,7 @@ WHERE company_name LIKE '%Restaurant%'
 /*
 19. Tabla: orders
 Pregunta: ¿Cuál es el valor promedio del flete (freight) para órdenes cuyo flete esté
-entre  y ? Redondee a  decimales.
+entre  y ? Redondee a 2 decimales.
 
  */
 
@@ -217,7 +219,7 @@ WHERE P.unit_price > (SELECT AVG(unit_price) FROM products);
 
 /*
 23. Tablas: customers, orders
-Pregunta: ¿Cuáles son los nombres de las compañías que han realizado más de
+Pregunta: ¿Cuáles son los nombres de las compañías que han realizado más de 5 
 órdenes
  */
 
@@ -336,6 +338,328 @@ FROM suppliers s
          JOIN categories c ON p.category_id = c.category_id
 WHERE c.category_name = 'Beverages'
 GROUP BY s.company_name;
+
+
+
+
+
+/*
+------------------------------------------------------------------------------------
+TALLER 2
+------------------------------------------------------------------------------------
+*/
+-- ================================================================
+/*
+Bloque 1: Repaso y Consolidación de GROUP BY y JOINs (5 Preguntas) 
+En este bloque, se reforzarán los conceptos básicos y esenciales de la agrupación de datos y 
+la combinación de tablas. 
+Instrucciones: Escriba una consulta SQL para resolver cada problema. 
+*/
+-- ================================================================
+
+
+/*
+1. Conteo de Productos por Categoría: 
+o Muestre el nombre de cada categoría y la cantidad total de productos que hay 
+en cada una. 
+o Columnas esperadas: category_name, total_products. 
+*/
+SELECT c.category_name AS Nombre_categoria, COUNT(p.product_id) AS Total_productos
+FROM categories c
+INNER JOIN products p ON c.category_id = p.category_id
+GROUP BY c.category_name
+ORDER BY Total_productos DESC;
+
+/*
+2. Órdenes por Cliente y País: 
+o Liste el nombre de la compañía de cada cliente (company_name), su país 
+(country) y el número total de órdenes que ha realizado. Ordene los 
+resultados por el nombre de la compañía del cliente. 
+o Columnas esperadas: company_name, country, total_orders. 
+*/
+
+SELECT c.company_name AS Nombre_compañia, c.country AS pais, COUNT(o.order_id) AS Total_ordenes
+FROM  customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.company_name, c.country
+ORDER BY c.company_name DESC;
+
+/*
+3. Proveedores sin Productos Asignados (LEFT JOIN): 
+o Identifique a todos los proveedores (company_name) que actualmente no 
+suministran ningún producto a Northwind. 
+o Columnas esperadas: company_name. 
+*/
+
+
+
+SELECT company_name AS Nombre_compañia, product_name AS nombre_producto
+FROM suppliers s 
+LEFT JOIN ON 
+GROUP BY
+/*
+4. Clientes sin Órdenes (RIGHT JOIN / LEFT JOIN): 
+o Muestre el nombre de todas las compañías de clientes (company_name) que 
+nunca han realizado una orden. 
+o Columnas esperadas: company_name.
+(Pista: Intenta resolverlo con RIGHT JOIN y luego con LEFT JOIN para ver la 
+flexibilidad) 
+*/
+
+
+
+
+
+
+/*
+5. Detalle de Órdenes con Precios Agregados: 
+o Para cada orden, muestre el order_id, el company_name del cliente que la 
+realizó y la suma total del valor de los productos en esa orden 
+(considerando unit_price * quantity * (1 - discount)). Solo 
+muestre órdenes cuyo valor total sea mayor a 5000. Ordene por el valor total 
+de la orden de forma descendente. 
+o Columnas esperadas: order_id, company_name, total_order_value. 
+*/
+
+
+
+-- ================================================================
+/* Bloque 2: Subconsultas y CTEs (5 Preguntas)
+Este bloque se enfoca en el uso de subconsultas en sus diferentes formas y las Common 
+Table Expressions (CTEs) para consultas más estructuradas. 
+Instrucciones: Escriba una consulta SQL para resolver cada problema. 
+*/
+-- ================================================================
+
+
+
+/*
+1. Productos Más Caros que el Promedio General (Subconsulta en WHERE): 
+o Liste el product_name y unit_price de todos los productos cuyo precio 
+unitario es mayor que el precio unitario promedio de todos los productos. 
+o Columnas esperadas: product_name, unit_price. 
+*/
+
+
+/*
+2. Detalles del Empleado con Mayor Cantidad de Ventas (Subconsulta Escalar 
+en SELECT): 
+o Para cada empleado, muestre su first_name, last_name y 
+el employee_id del empleado que ha gestionado el mayor número de 
+órdenes. 
+o Columnas 
+esperadas: first_name, last_name, employee_id_top_seller. 
+o (Pista: La subconsulta debe devolver un único ID del empleado, que se repita 
+para cada fila)
+*/
+
+
+
+/*
+3. Clientes con Órdenes "Grandes" (Subconsulta en FROM / Tabla Derivada): 
+o Muestre el company_name y contact_name de los clientes que han realizado 
+al menos una orden con un freight (tarifa de envío) superior a 200. 
+o Columnas esperadas: company_name, contact_name. 
+*/
+
+
+/*
+4. Países con Clientes y Empleados (Subconsulta con EXISTS): 
+o Liste todos los países que tienen tanto clientes como empleados. 
+o Columnas esperadas: country_name. 
+o (Pista: Utilice UNION o combine dos EXISTS) 
+*/
+
+
+/*
+Categorías con Productos por Encima del Umbral de Reorden (CTE - Common 
+Table Expression): 
+o Identifique el category_name de aquellas categorías donde el número de 
+productos con reorder_level mayor a 10 es al menos 3. Use una CTE para 
+primero contar los productos con reorder_level > 10 por categoría. 
+o Columnas esperadas: category_name.
+*/
+
+
+
+-- ================================================================
+/* Bloque 3: Agregaciones Avanzadas con ROLLUP y CUBE (5 Preguntas) 
+Bloque 3: Agregaciones Avanzadas con ROLLUP y CUBE (5 Preguntas) 
+Este bloque introduce las poderosas extensiones de GROUP BY para generar resúmenes de 
+datos multidimensionales. 
+Instrucciones: Escriba una consulta SQL para resolver cada problema. 
+Utilice COALESCE para dar nombres descriptivos a los NULL en los subtotales/totales.
+*/
+-- ================================================================
+
+
+/*
+1. Reporte de Ventas Jerárquico por Empleado y Cliente (ROLLUP): 
+o Calcule la suma total de quantity vendida y el valor total (unit_price * 
+quantity * (1 - discount)) para cada combinación de empleado 
+(first_name, last_name) y cliente (company_name). 
+o Incluya subtotales por empleado y un gran total general. Ordene los resultados 
+para una lectura clara de la jerarquía. 
+o Columnas 
+esperadas: employee_name, customer_company_name, total_quantity, 
+total_value. 
+*/
+
+
+/*
+2. Análisis de Stock por Categoría y Proveedor (ROLLUP): 
+o Muestre el promedio de units_in_stock y la suma 
+de units_on_order para cada categoría de producto (category_name) y, 
+dentro de cada categoría, por proveedor (company_name). 
+o Incluya subtotales por category_name y un total general de stock y órdenes. 
+o Columnas 
+esperadas: category_name, supplier_company_name, avg_stock, tota
+ l_on_order.
+*/
+
+
+
+/*
+3. Ventas Cruzadas por Región de Envío y País (CUBE): 
+o Determine el número total de órdenes y el AVG(freight) (tarifa de envío 
+promedio) para todas las posibles combinaciones 
+de ship_region y ship_country. 
+o Incluya todos los subtotales (por región, por país) y un total general. 
+o Columnas 
+esperadas: ship_region, ship_country, total_orders, avg_freight.
+*/
+
+
+/*
+4. Análisis Completo de Precios por Categoría y Proveedor (CUBE): 
+o Muestre el MIN(unit_price), MAX(unit_price) y AVG(unit_price) de 
+los productos para cada combinación 
+de category_name y supplier_company_name. 
+o Incluya todos los subtotales posibles y un total general. 
+o Columnas 
+esperadas: category_name, supplier_company_name, min_price, max_
+ price, avg_price. 
+*/
+
+
+/*
+5. Reporte de Clientes y Países con Conteo de Órdenes (GROUPING SETS): 
+o Genere un reporte que muestre el conteo total de órdenes para las siguientes 
+agrupaciones: 
+ Solo por country de cliente. 
+ Solo por company_name de cliente. 
+ Un gran total general. 
+o Columnas esperadas: group_criteria, total_orders. 
+o (Pista: Necesitarás una columna group_criteria que use COALESCE para 
+indicar el nivel de agrupación actual.)
+*/
+
+
+
+-- ================================================================
+/* Bloque 4: Ejercicios Integradores y Retos (5 Preguntas)
+Bloque 4: Ejercicios Integradores y Retos (5 Preguntas) 
+Este bloque combina múltiples conceptos aprendidos para resolver problemas más complejos, 
+simulando escenarios reales. 
+Instrucciones: Escriba una consulta SQL para resolver cada problema. 
+*/
+-- ================================================================
+
+
+/*
+1. Productos Superiores al Promedio de su Categoría: 
+o Liste product_name, category_name y unit_price de aquellos productos 
+cuyo precio es mayor que el precio promedio de los productos dentro de su 
+propia categoría. 
+o Columnas esperadas: product_name, category_name, unit_price. 
+o (Pista: Esto requiere una subconsulta correlacionada o una CTE con funciones 
+de ventana si ya las han visto, si no, enfóquense en la correlacionada.) 
+*/
+
+
+/*
+2. Empleados que Superan el Objetivo de Ventas por Región (Subconsulta y GROUP 
+BY con HAVING): 
+o Identifique a los first_name y last_name de los empleados que, en 
+su territory_description (región), han gestionado un número de órdenes 
+superior al promedio de órdenes gestionadas por todos los empleados en esa 
+misma región. 
+o Columnas 
+esperadas: employee_name, territory_description, total_orders_em
+ ployee, avg_orders_in_region. 
+*/
+
+
+
+/*
+3. Valor Total de Productos en Stock por Proveedor y Categoría (ROLLUP con CASE 
+WHEN): 
+o Cree un reporte usando ROLLUP para mostrar la suma total del valor 
+de units_in_stock (unit_price * units_in_stock) para 
+cada supplier_company_name, y luego por cada category_name. 
+o Además, en el SELECT, agregue una columna 
+llamada stock_level_comment que indique 'Alto' si 
+el SUM(units_in_stock) del grupo es > 500, 'Medio' si es entre 100 y 500, y 
+'Bajo' si es < 100. 
+o Columnas 
+esperadas: supplier_company_name, category_name, total_stock_val
+ ue, stock_level_comment.
+*/
+
+
+/*
+4. Análisis de Clientes por Antigüedad y Gasto (CUBE con Subconsulta y CASE 
+WHEN): 
+o Clasifique a los clientes en "Antiguos" (fecha de primera orden anterior al 
+1997-01-01) o "Nuevos". 
+o Genere un análisis usando CUBE que muestre la suma total gastada 
+(unit_price * quantity * (1 - discount)) y el conteo de órdenes, 
+para todas las combinaciones 
+de customer_classification (Antiguos/Nuevos) y employee_name que 
+gestionó la orden. 
+o Columnas 
+esperadas: customer_classification, employee_name, total_spent, 
+total_orders. 
+*/
+
+
+/*
+5. Top 3 Productos Más Vendidos por Categoría (CTE y Función de 
+Ventana/Subconsulta Correlacionada): 
+o Para cada category_name, identifique los 3 productos (product_name) que 
+han tenido la mayor cantidad total vendida (SUM(quantity)). 
+o Columnas 
+esperadas: category_name, product_name, total_quantity_sold, ran
+ k_in_category. 
+o (Pista: Si los estudiantes ya vieron funciones de ventana 
+como RANK() o DENSE_RANK(), este es un excelente ejercicio para aplicarlas 
+con una CTE. Si no, se puede lograr con una subconsulta correlacionada más 
+compleja o múltiples joins.)
+*/
+
+
+
+
+
+-- ================================================================
+--
+-- ================================================================
+
+
+
+SELECT COUNT(product_name) FROM products;
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -514,6 +838,192 @@ group by e.employee_id, e.first_name, e.last_name
 having count(o.order_id) > 100
 order by e.employee_id asc;
 --
+
+
+
+/*
+------------------------------------------------------------------------------------
+NIVEL AVANZADO
+------------------------------------------------------------------------------------
+*/
+
+
+
+
+/*
+22. Tablas: products, categories
+Pregunta: Muestre el nombre de los productos y su categoría, solo para productos
+cuyo precio unitario sea mayor al promedio general
+ */
+
+SELECT p.product_name, p.unit_price AS Productos_con_promedio_mayor, c.category_name
+FROM products p
+INNER JOIN categories c on p.category_id = c.category_id
+WHERE P.unit_price > (SELECT AVG(unit_price) FROM products);
+
+
+-- Sentencias update 
+/*
+son muy importante las tablas 
+SET columnas que se van a actualizar dentro de al tabla 
+FROM tablas que van a cumplir como condicion 
+WHERE campo 
+
+
+BEGIN; PARA QUEDAR EN TRANSACCION
+*/
+
+BEGIN;
+-- para subir el 10%
+UPDATE  products
+-- se sube el pecio unitario a 10%
+SET unit_price = unit_price * 1.1
+-- solo para productos con categoria 1
+WHERE category_id = 1;
+
+SELECT unit_price
+FROM products
+WHERE category_id = 1;
+
+
+--- Delete
+/*
+eliminar cancelados y tiene mas de dos años de antiguedad 
+CURREN DATE ES PARA DAR LA FECHA ACTUAL*/
+
+BEGIN;
+DELETE FROM order_details WHERE order_id = 11008;
+DELETE FROM orders
+WHERE shipped_date IS NULL
+AND required_date CURRENT_DATE - INTERVAL '2 years';
+AND order_id = 11008
+SELECT * FROM order_details WHERE order_id = 11008
+BEGIN
+WHERE shipped_date IS NULL
+AND required_date < CURRENT_DATE - INTERVAL '2 years';
+
+
+--========================
+BEGIN;
+UPDATE products
+SET salary = salary* 1.05
+WHERE product_id = 5
+SELECT * FROM products WHERE product_id = 5;
+
+--==========================
+SELECT s.company_name, product_name, unit_price  FROM product p
+INNER JOIN supppliers s ON p.suppplier_id = s.suppplier_id
+WHERE s.company_name = 'Exotic Liquids';
+
+
+
+
+--==================================================
+/*
+eliminar pedidios de empleados que ya no esten activos*/
+
+BEGIN;
+DELETE FROM deatils_orders WHERE order_id =10248
+DELETE FROM orders o
+USING employees e
+WHERE o.employee_id = e.employee_id
+AND e.employee_id = 5
+AND o.order_id = 10248;
+
+
+/*
+4. Con CASE WHEN
+Objetivo: Subir en 15% los precios de productos con poco stock y en 5% los demás.
+
+*/
+
+UPDATE products
+-- CASE es como un if 
+SET unit_price = CASE 
+-- cuando ls productos en stock tiene un cantidad < 20 se suve el precio a un 15%
+    WHEN units_in_stock < 0 THEN unit_price * 1.15
+	WHEN units_in_stock < 20 THEN unit_price * 1.1
+	WHEN units_in_stock < 100 THEN unit_price * 1.2
+-- si no se el precio queda con un 5%
+    ELSE unit_price * 1.05
+END
+WHERE category_id = 3;
+
+----------------=================================
+
+/*
+5. Avanzado (JOIN + subconsulta con GROUP BY)
+Objetivo: Incrementar en 10% los precios de los productos más vendidos (ventas > 100 unidades).
+5. Avanzado (JOIN + subconsulta con GROUP BY)
+Objetivo: Incrementar en 10% los precios de los productos más vendidos (ventas > 100 unidades).
+
+Se usa una subconsulta con GROUP BY para identificar productos con ventas altas.
+*/
+UPDATE products p
+SET unit_price = unit_price * 1.10
+FROM (
+    SELECT od.product_id, SUM(od.quantity) AS total_vendido
+    FROM order_details od
+    GROUP BY od.product_id
+    HAVING SUM(od.quantity) > 100
+) v
+WHERE p.product_id = v.product_id;
+
+
+
+SELECT product_name
+FROM products
+WHERE category_id IN(
+SELECT category_id FROM categories  WHERE category_name = 'Beverages'
+);
+
+
+SELECT 
+product_name,
+unit_price IN (SELECT AVG(unit_price) FROM products AS avg_all_products)
+FROM products;
+
+--
+SELECT p.product_name, c.category_name
+FROM products p
+INNER JOIN categories c ON p.category_id = c.category_id
+INNER JOIN (SELECT product_id,  unit_price, units_in_stock, category_id
+FROM products) x ON x.category_id = c.category_id  AND x.unit_price > 20;
+
+
+------------------------------------
+WITH EmployeeOrders
+SELECT (e.employee_id,
+		last_name || '' || employee_name AS employee_name,
+		COUNT(o.order_id) AS total_orders
+		FROM employees AS e
+		INNER JOIN orders AS o ON e.employee_id = o.employee_id
+		GROUP BY e.employee_id, employee_name
+		);
+SELECT employee_name, total_orders
+FROM EmployeeOrders
+ORDER BY total_orders DESC
+LIMIT 5;
+
+/*
+ crear un select con una sub consulta
+cuales  son los nombres de productos cuyo 
+precio unitario es mayor al promedi de ls precios unitarios de los productos de la categoria Seafood
+*/
+
+SELECT p.product_name, p.unit_price
+FROM products p
+WHERE p.unit_price > (
+    SELECT AVG(p.unit_price)
+    FROM products P 
+    INNER JOIN categories c ON p.category_id = c.category_id
+    WHERE c.category_name = 'Seafood'
+);
+
+FROM employees e
+INNER JOIN 
+
+
 
 -- Name: categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --

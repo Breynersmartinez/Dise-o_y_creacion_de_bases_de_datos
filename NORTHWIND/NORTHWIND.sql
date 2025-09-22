@@ -364,7 +364,8 @@ o Muestre el nombre de cada categoría y la cantidad total de productos que hay
 en cada una. 
 o Columnas esperadas: category_name, total_products. 
 */
-SELECT c.category_name AS Nombre_categoria, COUNT(p.product_id) AS Total_productos
+SELECT c.category_name,
+  	 COUNT(p.product_id) AS Total_productos
 FROM categories c
 INNER JOIN products p ON c.category_id = p.category_id
 GROUP BY c.category_name
@@ -378,7 +379,9 @@ resultados por el nombre de la compañía del cliente.
 o Columnas esperadas: company_name, country, total_orders. 
 */
 
-SELECT c.company_name AS Nombre_compañia, c.country AS pais, COUNT(o.order_id) AS Total_ordenes
+SELECT c.company_name, 
+		c.country,
+		COUNT(o.order_id) AS Total_orders
 FROM  customers c
 LEFT JOIN orders o ON c.customer_id = o.customer_id
 GROUP BY c.company_name, c.country
@@ -392,11 +395,15 @@ o Columnas esperadas: company_name.
 */
 
 
-
-SELECT company_name AS Nombre_compañia, product_name AS nombre_producto
+SELECT s.company_name 
 FROM suppliers s 
-LEFT JOIN ON 
-GROUP BY
+LEFT JOIN products p ON s.supplier_id = p.supplier_id
+WHERE  product_id IS NULL
+ORDER BY s.company_name;
+
+
+
+
 /*
 4. Clientes sin Órdenes (RIGHT JOIN / LEFT JOIN): 
 o Muestre el nombre de todas las compañías de clientes (company_name) que 
@@ -405,10 +412,19 @@ o Columnas esperadas: company_name.
 (Pista: Intenta resolverlo con RIGHT JOIN y luego con LEFT JOIN para ver la 
 flexibilidad) 
 */
+-- LEFT JOIN
+SELECT c.company_name 
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+WHERE order_id IS NULL
+ORDER BY c.company_name;
 
-
-
-
+-- RIGHT JOIN
+SELECT company_name 
+FROM customers C
+RIGHT JOIN orders o ON  c.customer_id = c.customer_id
+WHERE order_id IS NULL
+ORDER BY c.company_name;
 
 
 /*
@@ -421,6 +437,15 @@ de la orden de forma descendente.
 o Columnas esperadas: order_id, company_name, total_order_value. 
 */
 
+SELECT o.order_id,
+		c.company_name,  
+		SUM(od.unit_price * od.quantity * (1 - od.discount)) AS total_order_value 
+FROM orders o
+INNER JOIN customers c ON o.customer_id = c.customer_id
+INNER JOIN order_details od ON o.order_id = od.order_id
+GROUP BY o.order_id, c.company_name
+HAVING SUM(od.unit_price * od.quantity * (1 - od.discount)) > 5000
+ORDER BY total_order_value  DESC;
 
 
 -- ================================================================
@@ -441,6 +466,14 @@ o Columnas esperadas: product_name, unit_price.
 */
 
 
+SELECT product_name, 
+		unit_price AS productos_con_promedio_mayor
+FROM products
+WHERE  unit_price > (SELECT  AVG(unit_price) FROM products WHERE unit_price IS NOT NULL)
+ORDER BY unit_price DESC;
+
+
+
 /*
 2. Detalles del Empleado con Mayor Cantidad de Ventas (Subconsulta Escalar 
 en SELECT): 
@@ -453,6 +486,15 @@ o (Pista: La subconsulta debe devolver un único ID del empleado, que se repita
 para cada fila)
 */
 
+SELECT emp.first_name, emp.last_name,
+ (SELECT e.employee_id 
+		 FROM employees e 
+		 INNER JOIN orders o ON e.employee_id  = o.employee_id
+		 GROUP BY e.employee_id
+		 ORDER BY COUNT(ORDER_ID) DESC
+		 LIMIT 1) AS employee_id_top_seller 
+FROM employees emp;
+
 
 
 /*
@@ -463,6 +505,16 @@ o Columnas esperadas: company_name, contact_name.
 */
 
 
+SELECT c.company_name, c.contact_name
+FROM customers c
+INNER JOIN ( SELECT customer_id
+			FROM orders 
+			WHERE freight > 200
+			) big_orders  ON c.customer_id = big_orders.customer_id
+			ORDER BY c.company_name;
+
+
+
 /*
 4. Países con Clientes y Empleados (Subconsulta con EXISTS): 
 o Liste todos los países que tienen tanto clientes como empleados. 
@@ -470,15 +522,48 @@ o Columnas esperadas: country_name.
 o (Pista: Utilice UNION o combine dos EXISTS) 
 */
 
+SELECT DISTINCT c.country AS country_name
+FROM  customers c 
+WHERE EXISTS (
+	SELECT 1
+	FROM employees e
+	WHERE  e.country = c.country
+)
+UNION 
+SELECT DISTINCT country AS country_name
+FROM employees e
+WHERE EXISTS(
+	SELECT 1
+	FROM customers c
+	WHERE c.country = e.country
+)
+ORDER BY country_name;
+
+
 
 /*
-Categorías con Productos por Encima del Umbral de Reorden (CTE - Common 
+5. Categorías con Productos por Encima del Umbral de Reorden (CTE - Common 
 Table Expression): 
 o Identifique el category_name de aquellas categorías donde el número de 
 productos con reorder_level mayor a 10 es al menos 3. Use una CTE para 
 primero contar los productos con reorder_level > 10 por categoría. 
 o Columnas esperadas: category_name.
 */
+
+
+
+WITH products_high_reorder AS (
+	SELECT category_id, COUNT(*) AS products_count
+	FROM products p 
+	WHERE p.reorder_level > 10
+	GROUP BY p.category_id
+	HAVING COUNT(*) >=3 
+)
+SELECT category_name
+FROM categories c
+INNER JOIN products_high_reorder phr ON c.category_id = phr.category_id
+ORDER BY c.category_id;
+
 
 
 
@@ -506,6 +591,23 @@ total_value.
 */
 
 
+SELECT 
+    COALESCE(CONCAT(e.first_name, ' ', e.last_name), 'TOTAL GENERAL') as employee_name,
+    COALESCE(c.company_name, 'Subtotal por Empleado') as customer_company_name,
+    SUM(od.quantity) as total_quantity,
+    SUM(od.unit_price * od.quantity * (1 - od.discount)) as total_value
+FROM employees e
+INNER JOIN orders o ON e.employee_id = o.employee_id
+INNER JOIN customers c ON o.customer_id = c.customer_id
+INNER JOIN order_details od ON o.order_id = od.order_id
+GROUP BY ROLLUP(CONCAT(e.first_name, ' ', e.last_name), c.company_name)
+ORDER BY 
+    CASE WHEN CONCAT(e.first_name, ' ', e.last_name) IS NULL THEN 1 ELSE 0 END,
+    employee_name,
+    CASE WHEN c.company_name IS NULL THEN 1 ELSE 0 END,
+    customer_company_name;
+
+
 /*
 2. Análisis de Stock por Categoría y Proveedor (ROLLUP): 
 o Muestre el promedio de units_in_stock y la suma 
@@ -517,7 +619,20 @@ esperadas: category_name, supplier_company_name, avg_stock, tota
  l_on_order.
 */
 
-
+SELECT 
+    COALESCE(c.category_name, 'TOTAL GENERAL') as category_name,
+    COALESCE(s.company_name, 'Subtotal por Categoría') as supplier_company_name,
+    ROUND(AVG(p.units_in_stock::numeric), 2) as avg_stock,
+    SUM(p.units_on_order) as total_on_order
+FROM categories c
+INNER JOIN products p ON c.category_id = p.category_id
+INNER JOIN suppliers s ON p.supplier_id = s.supplier_id
+GROUP BY ROLLUP(c.category_name, s.company_name)
+ORDER BY 
+    CASE WHEN c.category_name IS NULL THEN 1 ELSE 0 END,
+    category_name,
+    CASE WHEN s.company_name IS NULL THEN 1 ELSE 0 END,
+    supplier_company_name;
 
 /*
 3. Ventas Cruzadas por Región de Envío y País (CUBE): 
@@ -529,6 +644,19 @@ o Columnas
 esperadas: ship_region, ship_country, total_orders, avg_freight.
 */
 
+SELECT 
+    COALESCE(ship_region, 'TODAS LAS REGIONES') as ship_region,
+    COALESCE(ship_country, 'TODOS LOS PAÍSES') as ship_country,
+    COUNT(order_id) as total_orders,
+    ROUND(AVG(freight)::numeric, 2) as avg_freight
+FROM orders
+WHERE ship_region IS NOT NULL AND ship_country IS NOT NULL
+GROUP BY CUBE(ship_region, ship_country)
+ORDER BY 
+    CASE WHEN ship_region = 'TODAS LAS REGIONES' THEN 1 ELSE 0 END,
+    ship_region,
+    CASE WHEN ship_country = 'TODOS LOS PAÍSES' THEN 1 ELSE 0 END,
+    ship_country;
 
 /*
 4. Análisis Completo de Precios por Categoría y Proveedor (CUBE): 
@@ -540,7 +668,22 @@ o Columnas
 esperadas: category_name, supplier_company_name, min_price, max_
  price, avg_price. 
 */
-
+SELECT 
+    COALESCE(c.category_name, 'TODAS LAS CATEGORÍAS') as category_name,
+    COALESCE(s.company_name, 'TODOS LOS PROVEEDORES') as supplier_company_name,
+    MIN(p.unit_price) as min_price,
+    MAX(p.unit_price) as max_price,
+    ROUND(AVG(p.unit_price)::numeric, 2) as avg_price
+FROM categories c
+INNER JOIN products p ON c.category_id = p.category_id
+INNER JOIN suppliers s ON p.supplier_id = s.supplier_id
+WHERE p.unit_price IS NOT NULL
+GROUP BY CUBE(c.category_name, s.company_name)
+ORDER BY 
+    CASE WHEN c.category_name = 'TODAS LAS CATEGORÍAS' THEN 1 ELSE 0 END,
+    category_name,
+    CASE WHEN s.company_name = 'TODOS LOS PROVEEDORES' THEN 1 ELSE 0 END,
+    supplier_company_name;
 
 /*
 5. Reporte de Clientes y Países con Conteo de Órdenes (GROUPING SETS): 
@@ -554,7 +697,28 @@ o (Pista: Necesitarás una columna group_criteria que use COALESCE para
 indicar el nivel de agrupación actual.)
 */
 
-
+SELECT 
+    CASE 
+        WHEN c.country IS NOT NULL AND c.company_name IS NULL THEN 'Por País'
+        WHEN c.country IS NULL AND c.company_name IS NOT NULL THEN 'Por Cliente'
+        WHEN c.country IS NULL AND c.company_name IS NULL THEN 'Total General'
+    END as group_criteria,
+    COALESCE(c.country, c.company_name, 'TOTAL') as group_value,
+    COUNT(o.order_id) as total_orders
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY GROUPING SETS (
+    (c.country),
+    (c.company_name),
+    ()
+)
+ORDER BY 
+    CASE 
+        WHEN c.country IS NOT NULL AND c.company_name IS NULL THEN 1
+        WHEN c.country IS NULL AND c.company_name IS NOT NULL THEN 2
+        ELSE 3
+    END,
+    group_value;
 
 -- ================================================================
 /* Bloque 4: Ejercicios Integradores y Retos (5 Preguntas)
@@ -576,6 +740,19 @@ o (Pista: Esto requiere una subconsulta correlacionada o una CTE con funciones
 de ventana si ya las han visto, si no, enfóquense en la correlacionada.) 
 */
 
+SELECT 
+    p.product_name,
+    c.category_name,
+    p.unit_price
+FROM products p
+INNER JOIN categories c ON p.category_id = c.category_id
+WHERE p.unit_price > (
+    SELECT AVG(p2.unit_price)
+    FROM products p2
+    WHERE p2.category_id = p.category_id
+    AND p2.unit_price IS NOT NULL
+)
+ORDER BY c.category_name, p.unit_price DESC;
 
 /*
 2. Empleados que Superan el Objetivo de Ventas por Región (Subconsulta y GROUP 
@@ -588,6 +765,41 @@ o Columnas
 esperadas: employee_name, territory_description, total_orders_em
  ployee, avg_orders_in_region. 
 */
+SELECT 
+    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+    t.territory_description,
+    COUNT(o.order_id) as total_orders_employee,
+    (SELECT ROUND(AVG(order_count)::numeric, 2)
+     FROM (
+         SELECT COUNT(ord.order_id) as order_count
+         FROM employees emp
+         INNER JOIN employee_territories et ON emp.employee_id = et.employee_id
+         INNER JOIN territories ter ON et.territory_id = ter.territory_id
+         LEFT JOIN orders ord ON emp.employee_id = ord.employee_id
+         WHERE ter.territory_description = t.territory_description
+         GROUP BY emp.employee_id
+     ) avg_calc
+    ) as avg_orders_in_region
+FROM employees e
+INNER JOIN employee_territories et ON e.employee_id = et.employee_id
+INNER JOIN territories t ON et.territory_id = t.territory_id
+LEFT JOIN orders o ON e.employee_id = o.employee_id
+GROUP BY e.employee_id, e.first_name, e.last_name, t.territory_description
+HAVING COUNT(o.order_id) > (
+    SELECT AVG(order_count)
+    FROM (
+        SELECT COUNT(ord.order_id) as order_count
+        FROM employees emp
+        INNER JOIN employee_territories et2 ON emp.employee_id = et2.employee_id
+        INNER JOIN territories ter ON et2.territory_id = ter.territory_id
+        LEFT JOIN orders ord ON emp.employee_id = ord.employee_id
+        WHERE ter.territory_description = t.territory_description
+        GROUP BY emp.employee_id
+    ) subq
+)
+ORDER BY t.territory_description, total_orders_employee DESC;
+
+
 
 
 
@@ -606,7 +818,25 @@ esperadas: supplier_company_name, category_name, total_stock_val
  ue, stock_level_comment.
 */
 
-
+SELECT 
+    COALESCE(s.company_name, 'TOTAL GENERAL') as supplier_company_name,
+    COALESCE(c.category_name, 'Subtotal por Proveedor') as category_name,
+    SUM(p.unit_price * p.units_in_stock) as total_stock_value,
+    CASE 
+        WHEN SUM(p.units_in_stock) > 500 THEN 'Alto'
+        WHEN SUM(p.units_in_stock) BETWEEN 100 AND 500 THEN 'Medio'
+        ELSE 'Bajo'
+    END as stock_level_comment
+FROM suppliers s
+INNER JOIN products p ON s.supplier_id = p.supplier_id
+INNER JOIN categories c ON p.category_id = c.category_id
+WHERE p.unit_price IS NOT NULL AND p.units_in_stock IS NOT NULL
+GROUP BY ROLLUP(s.company_name, c.category_name)
+ORDER BY 
+    CASE WHEN s.company_name IS NULL THEN 1 ELSE 0 END,
+    supplier_company_name,
+    CASE WHEN c.category_name IS NULL THEN 1 ELSE 0 END,
+    category_name;
 /*
 4. Análisis de Clientes por Antigüedad y Gasto (CUBE con Subconsulta y CASE 
 WHEN): 
@@ -622,7 +852,33 @@ esperadas: customer_classification, employee_name, total_spent,
 total_orders. 
 */
 
-
+WITH customer_classification AS (
+    SELECT 
+        c.customer_id,
+        CASE 
+            WHEN MIN(o.order_date) < '1997-01-01' THEN 'Antiguos'
+            ELSE 'Nuevos'
+        END as customer_type,
+        c.company_name
+    FROM customers c
+    INNER JOIN orders o ON c.customer_id = o.customer_id
+    GROUP BY c.customer_id, c.company_name
+)
+SELECT 
+    COALESCE(cc.customer_type, 'TODAS LAS CLASIFICACIONES') as customer_classification,
+    COALESCE(CONCAT(e.first_name, ' ', e.last_name), 'TODOS LOS EMPLEADOS') as employee_name,
+    SUM(od.unit_price * od.quantity * (1 - od.discount)) as total_spent,
+    COUNT(DISTINCT o.order_id) as total_orders
+FROM customer_classification cc
+INNER JOIN orders o ON cc.customer_id = o.customer_id
+INNER JOIN employees e ON o.employee_id = e.employee_id
+INNER JOIN order_details od ON o.order_id = od.order_id
+GROUP BY CUBE(cc.customer_type, CONCAT(e.first_name, ' ', e.last_name))
+ORDER BY 
+    CASE WHEN cc.customer_type IS NULL THEN 1 ELSE 0 END,
+    customer_classification,
+    CASE WHEN CONCAT(e.first_name, ' ', e.last_name) IS NULL THEN 1 ELSE 0 END,
+    employee_name;
 /*
 5. Top 3 Productos Más Vendidos por Categoría (CTE y Función de 
 Ventana/Subconsulta Correlacionada): 
@@ -637,7 +893,32 @@ con una CTE. Si no, se puede lograr con una subconsulta correlacionada más
 compleja o múltiples joins.)
 */
 
-
+WITH product_sales AS (
+    SELECT 
+        p.category_id,
+        p.product_name,
+        SUM(od.quantity) as total_quantity_sold
+    FROM products p
+    INNER JOIN order_details od ON p.product_id = od.product_id
+    GROUP BY p.category_id, p.product_name, p.product_id
+),
+ranked_products AS (
+    SELECT 
+        ps.category_id,
+        ps.product_name,
+        ps.total_quantity_sold,
+        ROW_NUMBER() OVER (PARTITION BY ps.category_id ORDER BY ps.total_quantity_sold DESC) as rank_in_category
+    FROM product_sales ps
+)
+SELECT 
+    c.category_name,
+    rp.product_name,
+    rp.total_quantity_sold,
+    rp.rank_in_category
+FROM ranked_products rp
+INNER JOIN categories c ON rp.category_id = c.category_id
+WHERE rp.rank_in_category <= 3
+ORDER BY c.category_name, rp.rank_in_category;
 
 
 
@@ -992,36 +1273,41 @@ FROM products) x ON x.category_id = c.category_id  AND x.unit_price > 20;
 
 
 ------------------------------------
-WITH EmployeeOrders
-SELECT (e.employee_id,
-		last_name || '' || employee_name AS employee_name,
+-- subconsulta de empleado y total de ordenes
+
+WITH EmployeeOrders AS(
+ SELECT e.employee_id,
+		e.last_name || '' || first_name AS employee_name,
 		COUNT(o.order_id) AS total_orders
 		FROM employees AS e
 		INNER JOIN orders AS o ON e.employee_id = o.employee_id
 		GROUP BY e.employee_id, employee_name
-		);
+		)
 SELECT employee_name, total_orders
 FROM EmployeeOrders
 ORDER BY total_orders DESC
 LIMIT 5;
 
+
+
 /*
  crear un select con una sub consulta
 cuales  son los nombres de productos cuyo 
-precio unitario es mayor al promedi de ls precios unitarios de los productos de la categoria Seafood
+precio unitario es mayor al promedi de ls 
+precios unitarios de los productos de la categoria Seafood
 */
 
-SELECT p.product_name, p.unit_price
-FROM products p
-WHERE p.unit_price > (
-    SELECT AVG(p.unit_price)
-    FROM products P 
-    INNER JOIN categories c ON p.category_id = c.category_id
-    WHERE c.category_name = 'Seafood'
-);
+SELECT product_name, unit_price
+FROM products 
+WHERE unit_price > (SELECT AVG(P.unit_price) 
+					FROM products P
+					INNER JOIN categories c ON p.category_id = c.category_id
+					WHERE category_name = 'Seafood'
+					)
 
-FROM employees e
-INNER JOIN 
+				ORDER BY unit_price DESC;
+
+
 
 
 

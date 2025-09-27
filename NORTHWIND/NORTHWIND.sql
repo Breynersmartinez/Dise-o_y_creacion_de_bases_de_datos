@@ -54,7 +54,7 @@ Pregunta: Muestre todos los productos cuyo nombre contenga la palabra "Cheese".
  */
 
 SELECT  product_name as Nombre_producto
-FROM products 
+FROM products
 WHERE product_name ILIKE '%Cheese%';
 
 -- No hay productos cuyo nombre contenga la palabra "Cheese"
@@ -65,7 +65,7 @@ Pregunta: Muestre los empleados cuyos países sean 'USA', 'UK' o 'France'.
  */
 
 SELECT last_name AS Apellidos, first_name AS Nombres, country AS pais
-FROM Employees 
+FROM Employees
 WHERE country IN ('USA', 'UK', 'France');
 
 /*
@@ -201,7 +201,7 @@ completo del empleado y el total de órdenes
 
 SELECT  e.last_name ||'  '|| e.first_name AS nombre_completo, COUNT(o.order_id)
 FROM employees e
-INNER JOIN orders o ON e.employee_id = o.employee_id
+         INNER JOIN orders o ON e.employee_id = o.employee_id
 GROUP BY e.last_name, e.first_name;
 
 
@@ -213,7 +213,7 @@ cuyo precio unitario sea mayor al promedio general
 
 SELECT p.product_name, p.unit_price AS Productos_con_promedio_mayor, c.category_name
 FROM products p
-INNER JOIN categories c on p.category_id = c.category_id
+         INNER JOIN categories c on p.category_id = c.category_id
 WHERE P.unit_price > (SELECT AVG(unit_price) FROM products);
 
 
@@ -225,7 +225,7 @@ Pregunta: ¿Cuáles son los nombres de las compañías que han realizado más de
 
 SELECT c.company_name AS nombre_compañia, COUNT(o.order_id)
 FROM customers c
-INNER JOIN orders o on c.customer_id = o.customer_id
+         INNER JOIN orders o on c.customer_id = o.customer_id
 GROUP BY c.company_name
 HAVING COUNT(o.order_id) > 5;
 
@@ -241,10 +241,10 @@ SELECT p.product_name AS nombre_producto,
        s.company_name AS nombre_proveedor,
        c.category_name AS nombre_categoria
 FROM products p
-INNER JOIN categories c ON p.category_id = c.category_id
-INNER JOIN suppliers s ON  p.supplier_id = s.supplier_id
+         INNER JOIN categories c ON p.category_id = c.category_id
+         INNER JOIN suppliers s ON  p.supplier_id = s.supplier_id
 WHERE   p.product_name   ILIKE   '%Chocolate%'
- AND   s.country  =  'Germany';
+  AND   s.country  =  'Germany';
 
 -- NO HAY productos
 --  cuyo nombre contenga "Chocolate" y cuyo proveedor sea de "Germany"
@@ -262,7 +262,7 @@ con promedio mayor a .
 
 SELECT c.country, ROUND(AVG(o.freight)::NUMERIC, 2) AS promedio_flete
 FROM orders o
-JOIN customers c ON o.customer_id = c.customer_id
+         JOIN customers c ON o.customer_id = c.customer_id
 GROUP BY c.country
 HAVING AVG(o.freight) > 50;
 
@@ -365,9 +365,9 @@ en cada una.
 o Columnas esperadas: category_name, total_products. 
 */
 SELECT c.category_name,
-  	 COUNT(p.product_id) AS Total_productos
+       COUNT(p.product_id) AS Total_productos
 FROM categories c
-INNER JOIN products p ON c.category_id = p.category_id
+         INNER JOIN products p ON c.category_id = p.category_id
 GROUP BY c.category_name
 ORDER BY Total_productos DESC;
 
@@ -379,11 +379,11 @@ resultados por el nombre de la compañía del cliente.
 o Columnas esperadas: company_name, country, total_orders. 
 */
 
-SELECT c.company_name, 
-		c.country,
-		COUNT(o.order_id) AS Total_orders
+SELECT c.company_name,
+       c.country,
+       COUNT(o.order_id) AS Total_orders
 FROM  customers c
-LEFT JOIN orders o ON c.customer_id = o.customer_id
+          LEFT JOIN orders o ON c.customer_id = o.customer_id
 GROUP BY c.company_name, c.country
 ORDER BY c.company_name DESC;
 
@@ -395,9 +395,9 @@ o Columnas esperadas: company_name.
 */
 
 
-SELECT s.company_name 
-FROM suppliers s 
-LEFT JOIN products p ON s.supplier_id = p.supplier_id
+SELECT s.company_name
+FROM suppliers s
+         LEFT JOIN products p ON s.supplier_id = p.supplier_id
 WHERE  product_id IS NULL
 ORDER BY s.company_name;
 
@@ -413,16 +413,16 @@ o Columnas esperadas: company_name.
 flexibilidad) 
 */
 -- LEFT JOIN
-SELECT c.company_name 
+SELECT c.company_name
 FROM customers c
-LEFT JOIN orders o ON c.customer_id = o.customer_id
+         LEFT JOIN orders o ON c.customer_id = o.customer_id
 WHERE order_id IS NULL
 ORDER BY c.company_name;
 
 -- RIGHT JOIN
-SELECT company_name 
+SELECT company_name
 FROM customers C
-RIGHT JOIN orders o ON  c.customer_id = c.customer_id
+         RIGHT JOIN orders o ON  c.customer_id = c.customer_id
 WHERE order_id IS NULL
 ORDER BY c.company_name;
 
@@ -438,11 +438,11 @@ o Columnas esperadas: order_id, company_name, total_order_value.
 */
 
 SELECT o.order_id,
-		c.company_name,  
-		SUM(od.unit_price * od.quantity * (1 - od.discount)) AS total_order_value 
+       c.company_name,
+       SUM(od.unit_price * od.quantity * (1 - od.discount)) AS total_order_value
 FROM orders o
-INNER JOIN customers c ON o.customer_id = c.customer_id
-INNER JOIN order_details od ON o.order_id = od.order_id
+         INNER JOIN customers c ON o.customer_id = c.customer_id
+         INNER JOIN order_details od ON o.order_id = od.order_id
 GROUP BY o.order_id, c.company_name
 HAVING SUM(od.unit_price * od.quantity * (1 - od.discount)) > 5000
 ORDER BY total_order_value  DESC;
@@ -466,8 +466,8 @@ o Columnas esperadas: product_name, unit_price.
 */
 
 
-SELECT product_name, 
-		unit_price AS productos_con_promedio_mayor
+SELECT product_name,
+       unit_price AS productos_con_promedio_mayor
 FROM products
 WHERE  unit_price > (SELECT  AVG(unit_price) FROM products WHERE unit_price IS NOT NULL)
 ORDER BY unit_price DESC;
@@ -487,12 +487,12 @@ para cada fila)
 */
 
 SELECT emp.first_name, emp.last_name,
- (SELECT e.employee_id 
-		 FROM employees e 
-		 INNER JOIN orders o ON e.employee_id  = o.employee_id
-		 GROUP BY e.employee_id
-		 ORDER BY COUNT(ORDER_ID) DESC
-		 LIMIT 1) AS employee_id_top_seller 
+       (SELECT e.employee_id
+        FROM employees e
+                 INNER JOIN orders o ON e.employee_id  = o.employee_id
+        GROUP BY e.employee_id
+        ORDER BY COUNT(ORDER_ID) DESC
+        LIMIT 1) AS employee_id_top_seller
 FROM employees emp;
 
 
@@ -507,11 +507,11 @@ o Columnas esperadas: company_name, contact_name.
 
 SELECT c.company_name, c.contact_name
 FROM customers c
-INNER JOIN ( SELECT customer_id
-			FROM orders 
-			WHERE freight > 200
-			) big_orders  ON c.customer_id = big_orders.customer_id
-			ORDER BY c.company_name;
+         INNER JOIN ( SELECT customer_id
+                      FROM orders
+                      WHERE freight > 200
+) big_orders  ON c.customer_id = big_orders.customer_id
+ORDER BY c.company_name;
 
 
 
@@ -523,19 +523,19 @@ o (Pista: Utilice UNION o combine dos EXISTS)
 */
 
 SELECT DISTINCT c.country AS country_name
-FROM  customers c 
+FROM  customers c
 WHERE EXISTS (
-	SELECT 1
-	FROM employees e
-	WHERE  e.country = c.country
+    SELECT 1
+    FROM employees e
+    WHERE  e.country = c.country
 )
-UNION 
+UNION
 SELECT DISTINCT country AS country_name
 FROM employees e
 WHERE EXISTS(
-	SELECT 1
-	FROM customers c
-	WHERE c.country = e.country
+    SELECT 1
+    FROM customers c
+    WHERE c.country = e.country
 )
 ORDER BY country_name;
 
@@ -553,15 +553,15 @@ o Columnas esperadas: category_name.
 
 
 WITH products_high_reorder AS (
-	SELECT category_id, COUNT(*) AS products_count
-	FROM products p 
-	WHERE p.reorder_level > 10
-	GROUP BY p.category_id
-	HAVING COUNT(*) >=3 
+    SELECT category_id, COUNT(*) AS products_count
+    FROM products p
+    WHERE p.reorder_level > 10
+    GROUP BY p.category_id
+    HAVING COUNT(*) >=3
 )
 SELECT category_name
 FROM categories c
-INNER JOIN products_high_reorder phr ON c.category_id = phr.category_id
+         INNER JOIN products_high_reorder phr ON c.category_id = phr.category_id
 ORDER BY c.category_id;
 
 
@@ -591,17 +591,17 @@ total_value.
 */
 
 
-SELECT 
+SELECT
     COALESCE(CONCAT(e.first_name, ' ', e.last_name), 'TOTAL GENERAL') as employee_name,
     COALESCE(c.company_name, 'Subtotal por Empleado') as customer_company_name,
     SUM(od.quantity) as total_quantity,
     SUM(od.unit_price * od.quantity * (1 - od.discount)) as total_value
 FROM employees e
-INNER JOIN orders o ON e.employee_id = o.employee_id
-INNER JOIN customers c ON o.customer_id = c.customer_id
-INNER JOIN order_details od ON o.order_id = od.order_id
+         INNER JOIN orders o ON e.employee_id = o.employee_id
+         INNER JOIN customers c ON o.customer_id = c.customer_id
+         INNER JOIN order_details od ON o.order_id = od.order_id
 GROUP BY ROLLUP(CONCAT(e.first_name, ' ', e.last_name), c.company_name)
-ORDER BY 
+ORDER BY
     CASE WHEN CONCAT(e.first_name, ' ', e.last_name) IS NULL THEN 1 ELSE 0 END,
     employee_name,
     CASE WHEN c.company_name IS NULL THEN 1 ELSE 0 END,
@@ -619,16 +619,16 @@ esperadas: category_name, supplier_company_name, avg_stock, tota
  l_on_order.
 */
 
-SELECT 
+SELECT
     COALESCE(c.category_name, 'TOTAL GENERAL') as category_name,
     COALESCE(s.company_name, 'Subtotal por Categoría') as supplier_company_name,
     ROUND(AVG(p.units_in_stock::numeric), 2) as avg_stock,
     SUM(p.units_on_order) as total_on_order
 FROM categories c
-INNER JOIN products p ON c.category_id = p.category_id
-INNER JOIN suppliers s ON p.supplier_id = s.supplier_id
+         INNER JOIN products p ON c.category_id = p.category_id
+         INNER JOIN suppliers s ON p.supplier_id = s.supplier_id
 GROUP BY ROLLUP(c.category_name, s.company_name)
-ORDER BY 
+ORDER BY
     CASE WHEN c.category_name IS NULL THEN 1 ELSE 0 END,
     category_name,
     CASE WHEN s.company_name IS NULL THEN 1 ELSE 0 END,
@@ -644,7 +644,7 @@ o Columnas
 esperadas: ship_region, ship_country, total_orders, avg_freight.
 */
 
-SELECT 
+SELECT
     COALESCE(ship_region, 'TODAS LAS REGIONES') as ship_region,
     COALESCE(ship_country, 'TODOS LOS PAÍSES') as ship_country,
     COUNT(order_id) as total_orders,
@@ -652,7 +652,7 @@ SELECT
 FROM orders
 WHERE ship_region IS NOT NULL AND ship_country IS NOT NULL
 GROUP BY CUBE(ship_region, ship_country)
-ORDER BY 
+ORDER BY
     CASE WHEN ship_region = 'TODAS LAS REGIONES' THEN 1 ELSE 0 END,
     ship_region,
     CASE WHEN ship_country = 'TODOS LOS PAÍSES' THEN 1 ELSE 0 END,
@@ -668,18 +668,18 @@ o Columnas
 esperadas: category_name, supplier_company_name, min_price, max_
  price, avg_price. 
 */
-SELECT 
+SELECT
     COALESCE(c.category_name, 'TODAS LAS CATEGORÍAS') as category_name,
     COALESCE(s.company_name, 'TODOS LOS PROVEEDORES') as supplier_company_name,
     MIN(p.unit_price) as min_price,
     MAX(p.unit_price) as max_price,
     ROUND(AVG(p.unit_price)::numeric, 2) as avg_price
 FROM categories c
-INNER JOIN products p ON c.category_id = p.category_id
-INNER JOIN suppliers s ON p.supplier_id = s.supplier_id
+         INNER JOIN products p ON c.category_id = p.category_id
+         INNER JOIN suppliers s ON p.supplier_id = s.supplier_id
 WHERE p.unit_price IS NOT NULL
 GROUP BY CUBE(c.category_name, s.company_name)
-ORDER BY 
+ORDER BY
     CASE WHEN c.category_name = 'TODAS LAS CATEGORÍAS' THEN 1 ELSE 0 END,
     category_name,
     CASE WHEN s.company_name = 'TODOS LOS PROVEEDORES' THEN 1 ELSE 0 END,
@@ -697,27 +697,27 @@ o (Pista: Necesitarás una columna group_criteria que use COALESCE para
 indicar el nivel de agrupación actual.)
 */
 
-SELECT 
-    CASE 
+SELECT
+    CASE
         WHEN c.country IS NOT NULL AND c.company_name IS NULL THEN 'Por País'
         WHEN c.country IS NULL AND c.company_name IS NOT NULL THEN 'Por Cliente'
         WHEN c.country IS NULL AND c.company_name IS NULL THEN 'Total General'
-    END as group_criteria,
+        END as group_criteria,
     COALESCE(c.country, c.company_name, 'TOTAL') as group_value,
     COUNT(o.order_id) as total_orders
 FROM customers c
-LEFT JOIN orders o ON c.customer_id = o.customer_id
+         LEFT JOIN orders o ON c.customer_id = o.customer_id
 GROUP BY GROUPING SETS (
     (c.country),
     (c.company_name),
     ()
-)
-ORDER BY 
-    CASE 
+    )
+ORDER BY
+    CASE
         WHEN c.country IS NOT NULL AND c.company_name IS NULL THEN 1
         WHEN c.country IS NULL AND c.company_name IS NOT NULL THEN 2
         ELSE 3
-    END,
+        END,
     group_value;
 
 -- ================================================================
@@ -740,17 +740,17 @@ o (Pista: Esto requiere una subconsulta correlacionada o una CTE con funciones
 de ventana si ya las han visto, si no, enfóquense en la correlacionada.) 
 */
 
-SELECT 
+SELECT
     p.product_name,
     c.category_name,
     p.unit_price
 FROM products p
-INNER JOIN categories c ON p.category_id = c.category_id
+         INNER JOIN categories c ON p.category_id = c.category_id
 WHERE p.unit_price > (
     SELECT AVG(p2.unit_price)
     FROM products p2
     WHERE p2.category_id = p.category_id
-    AND p2.unit_price IS NOT NULL
+      AND p2.unit_price IS NOT NULL
 )
 ORDER BY c.category_name, p.unit_price DESC;
 
@@ -765,37 +765,37 @@ o Columnas
 esperadas: employee_name, territory_description, total_orders_em
  ployee, avg_orders_in_region. 
 */
-SELECT 
+SELECT
     CONCAT(e.first_name, ' ', e.last_name) as employee_name,
     t.territory_description,
     COUNT(o.order_id) as total_orders_employee,
     (SELECT ROUND(AVG(order_count)::numeric, 2)
      FROM (
-         SELECT COUNT(ord.order_id) as order_count
-         FROM employees emp
-         INNER JOIN employee_territories et ON emp.employee_id = et.employee_id
-         INNER JOIN territories ter ON et.territory_id = ter.territory_id
-         LEFT JOIN orders ord ON emp.employee_id = ord.employee_id
-         WHERE ter.territory_description = t.territory_description
-         GROUP BY emp.employee_id
-     ) avg_calc
+              SELECT COUNT(ord.order_id) as order_count
+              FROM employees emp
+                       INNER JOIN employee_territories et ON emp.employee_id = et.employee_id
+                       INNER JOIN territories ter ON et.territory_id = ter.territory_id
+                       LEFT JOIN orders ord ON emp.employee_id = ord.employee_id
+              WHERE ter.territory_description = t.territory_description
+              GROUP BY emp.employee_id
+          ) avg_calc
     ) as avg_orders_in_region
 FROM employees e
-INNER JOIN employee_territories et ON e.employee_id = et.employee_id
-INNER JOIN territories t ON et.territory_id = t.territory_id
-LEFT JOIN orders o ON e.employee_id = o.employee_id
+         INNER JOIN employee_territories et ON e.employee_id = et.employee_id
+         INNER JOIN territories t ON et.territory_id = t.territory_id
+         LEFT JOIN orders o ON e.employee_id = o.employee_id
 GROUP BY e.employee_id, e.first_name, e.last_name, t.territory_description
 HAVING COUNT(o.order_id) > (
     SELECT AVG(order_count)
     FROM (
-        SELECT COUNT(ord.order_id) as order_count
-        FROM employees emp
-        INNER JOIN employee_territories et2 ON emp.employee_id = et2.employee_id
-        INNER JOIN territories ter ON et2.territory_id = ter.territory_id
-        LEFT JOIN orders ord ON emp.employee_id = ord.employee_id
-        WHERE ter.territory_description = t.territory_description
-        GROUP BY emp.employee_id
-    ) subq
+             SELECT COUNT(ord.order_id) as order_count
+             FROM employees emp
+                      INNER JOIN employee_territories et2 ON emp.employee_id = et2.employee_id
+                      INNER JOIN territories ter ON et2.territory_id = ter.territory_id
+                      LEFT JOIN orders ord ON emp.employee_id = ord.employee_id
+             WHERE ter.territory_description = t.territory_description
+             GROUP BY emp.employee_id
+         ) subq
 )
 ORDER BY t.territory_description, total_orders_employee DESC;
 
@@ -818,21 +818,21 @@ esperadas: supplier_company_name, category_name, total_stock_val
  ue, stock_level_comment.
 */
 
-SELECT 
+SELECT
     COALESCE(s.company_name, 'TOTAL GENERAL') as supplier_company_name,
     COALESCE(c.category_name, 'Subtotal por Proveedor') as category_name,
     SUM(p.unit_price * p.units_in_stock) as total_stock_value,
-    CASE 
+    CASE
         WHEN SUM(p.units_in_stock) > 500 THEN 'Alto'
         WHEN SUM(p.units_in_stock) BETWEEN 100 AND 500 THEN 'Medio'
         ELSE 'Bajo'
-    END as stock_level_comment
+        END as stock_level_comment
 FROM suppliers s
-INNER JOIN products p ON s.supplier_id = p.supplier_id
-INNER JOIN categories c ON p.category_id = c.category_id
+         INNER JOIN products p ON s.supplier_id = p.supplier_id
+         INNER JOIN categories c ON p.category_id = c.category_id
 WHERE p.unit_price IS NOT NULL AND p.units_in_stock IS NOT NULL
 GROUP BY ROLLUP(s.company_name, c.category_name)
-ORDER BY 
+ORDER BY
     CASE WHEN s.company_name IS NULL THEN 1 ELSE 0 END,
     supplier_company_name,
     CASE WHEN c.category_name IS NULL THEN 1 ELSE 0 END,
@@ -853,28 +853,28 @@ total_orders.
 */
 
 WITH customer_classification AS (
-    SELECT 
+    SELECT
         c.customer_id,
-        CASE 
+        CASE
             WHEN MIN(o.order_date) < '1997-01-01' THEN 'Antiguos'
             ELSE 'Nuevos'
-        END as customer_type,
+            END as customer_type,
         c.company_name
     FROM customers c
-    INNER JOIN orders o ON c.customer_id = o.customer_id
+             INNER JOIN orders o ON c.customer_id = o.customer_id
     GROUP BY c.customer_id, c.company_name
 )
-SELECT 
+SELECT
     COALESCE(cc.customer_type, 'TODAS LAS CLASIFICACIONES') as customer_classification,
     COALESCE(CONCAT(e.first_name, ' ', e.last_name), 'TODOS LOS EMPLEADOS') as employee_name,
     SUM(od.unit_price * od.quantity * (1 - od.discount)) as total_spent,
     COUNT(DISTINCT o.order_id) as total_orders
 FROM customer_classification cc
-INNER JOIN orders o ON cc.customer_id = o.customer_id
-INNER JOIN employees e ON o.employee_id = e.employee_id
-INNER JOIN order_details od ON o.order_id = od.order_id
+         INNER JOIN orders o ON cc.customer_id = o.customer_id
+         INNER JOIN employees e ON o.employee_id = e.employee_id
+         INNER JOIN order_details od ON o.order_id = od.order_id
 GROUP BY CUBE(cc.customer_type, CONCAT(e.first_name, ' ', e.last_name))
-ORDER BY 
+ORDER BY
     CASE WHEN cc.customer_type IS NULL THEN 1 ELSE 0 END,
     customer_classification,
     CASE WHEN CONCAT(e.first_name, ' ', e.last_name) IS NULL THEN 1 ELSE 0 END,
@@ -894,39 +894,196 @@ compleja o múltiples joins.)
 */
 
 WITH product_sales AS (
-    SELECT 
+    SELECT
         p.category_id,
         p.product_name,
         SUM(od.quantity) as total_quantity_sold
     FROM products p
-    INNER JOIN order_details od ON p.product_id = od.product_id
+             INNER JOIN order_details od ON p.product_id = od.product_id
     GROUP BY p.category_id, p.product_name, p.product_id
 ),
-ranked_products AS (
-    SELECT 
-        ps.category_id,
-        ps.product_name,
-        ps.total_quantity_sold,
-        ROW_NUMBER() OVER (PARTITION BY ps.category_id ORDER BY ps.total_quantity_sold DESC) as rank_in_category
-    FROM product_sales ps
-)
-SELECT 
+     ranked_products AS (
+         SELECT
+             ps.category_id,
+             ps.product_name,
+             ps.total_quantity_sold,
+             ROW_NUMBER() OVER (PARTITION BY ps.category_id ORDER BY ps.total_quantity_sold DESC) as rank_in_category
+         FROM product_sales ps
+     )
+SELECT
     c.category_name,
     rp.product_name,
     rp.total_quantity_sold,
     rp.rank_in_category
 FROM ranked_products rp
-INNER JOIN categories c ON rp.category_id = c.category_id
+         INNER JOIN categories c ON rp.category_id = c.category_id
 WHERE rp.rank_in_category <= 3
 ORDER BY c.category_name, rp.rank_in_category;
 
 
 
 -- ================================================================
---
+-- Taller 3 Sentencias UPDATE y DELETE en PostgreSQL
+-- ================================================================
+-- Nivel Básico (1–4)
 -- ================================================================
 
 
+/*
+1. Se hace necesario cambiar el apellido a Smith del empleado cuyo código es
+5 (employee_id). Por favor ajustar.
+�
+� Indicador: utilice UPDATE Employees SET LastName = ... WHERE
+EmployeeID = ....
+*/
+
+/*
+2. El producto con código 10 (product_id) ha cambiado de nombre a
+Chocolate Premium. Actualice este valor en la tabla de productos.
+*/
+
+/*
+3. La compañía de transporte con código 2 cambió de nombre a Speedy
+Express Internacional. Por favor actualice el registro en la tabla Shippers.
+*/
+
+/*
+4. La ciudad del cliente con código ALFKI cambió a Hamburg. Ajuste el campo
+correspondiente en la tabla Customers.
+*/
+
+-- ================================================================
+-- Nivel Intermedio (5–8)
+-- ================================================================
+
+/*
+5. Todos los productos que estén descontinuados (discontinued = 1) deben
+tener el precio unitario en 0. Ajuste dichos registros.
+*/
+
+/*
+6. El empleado con código 3 ha cambiado de título a Sales Manager. Por favor
+actualice el campo Title.
+*/
+
+/*
+7. Se requiere aumentar en un 10% el unit_price de todos los productos de la
+categoría Beverages. Realice la actualización correspondiente.
+�
+� Indicador: utilice FROM Categories para filtrar los productos.
+*/
+
+/*
+8. El campo Region de todos los clientes de país Germany se debe establecer
+*/
+
+-- ================================================================
+-- Nivel Semiavanzado (9–12)
+-- ================================================================
+
+/*
+9. Se requiere actualizar el campo contact_title de los clientes de México:
+o Si actualmente es 'Owner', debe pasar a 'Dueño'.
+o En caso contrario, debe quedar como 'Cliente General'.
+�
+� Indicador: use CASE WHEN en el SET.
+
+*/
+
+/*
+10. Es necesario recalcular el freight de todas las órdenes enviadas por la
+compañía de transporte United Package. El nuevo valor debe ser el freight
+original multiplicado por 1.15.
+�
+� Indicador: use FROM Shippers con INNER JOIN para identificar las
+órdenes.
+*/
+
+/*
+11. Se requiere modificar el unit_price de las órdenes de detalle (Order Details)
+de la siguiente manera:
+ Aumentar un 5% si el producto pertenece a la categoría Confections.
+ Disminuir un 3% si el producto pertenece a la categoría Seafood.
+�
+� Indicador: use JOIN con Products y Categories y CASE WHEN.
+*/
+
+/*
+12. Actualice el campo Region de los clientes:
+ Tome como base la tabla Customers.
+ Relaciónela con Orders mediante un INNER JOIN.
+ Relaciónela con Employees mediante un LEFT JOIN.
+ Finalmente, use una subconsulta con GROUP BY que cuente la cantidad
+de órdenes por empleado, y según este valor, ajuste Region:
+o 'Alta Actividad' si el empleado tiene más de 50 órdenes.
+o 'Actividad Media' en otro caso.
+*/
+
+-- ================================================================
+-- Parte B – Ejercicios con DELETE (8 ejercicios)
+-- ================================================================
+
+
+-- ================================================================
+-- Nivel Básico (1–3)
+-- ================================================================
+
+/*
+1. El transportista con código 3 ya no trabaja con la compañía. Elimínelo de la
+tabla Shippers.
+*/
+
+/*
+2. El cliente con código ANATR canceló su contrato. Elimínelo de la tabla
+Customers
+*/
+
+/*
+3. Se eliminaron los productos descontinuados (Discontinued = 1) del
+*/
+
+-- ================================================================
+-- Nivel Intermedio (4–6)
+-- ================================================================
+
+
+/*
+4. Se requiere eliminar todos los pedidos (Orders) realizados por el cliente
+BONAP.
+*/
+
+/*
+5. Elimine de la tabla Employees a los empleados que no tengan ninguna
+orden registrada en la tabla Orders.
+�
+� Indicador: utilice NOT EXISTS.
+*/
+
+/*
+6. Elimine los registros de la tabla Order Details cuyo Quantity sea igual a 0.
+*/
+
+-- ================================================================
+-- Nivel Semiavanzado (7–8)
+-- ================================================================
+/*
+7. Se necesita eliminar los clientes que no tengan pedidos, y además su país
+sea distinto de 'USA'.
+�
+� Indicador: use LEFT JOIN entre Customers y Orders.
+*/
+
+
+
+
+/*
+8. Elimine de la tabla Orders aquellos pedidos cuyo ShipCountry esté en
+'France', pero solamente si el freight promedio de dichos pedidos es menor
+a 50.
+�
+� Indicador: utilice una subconsulta con GROUP BY y HAVING para
+identificar los pedidos antes de borrarlos.
+*/
 
 SELECT COUNT(product_name) FROM products;
 
@@ -958,7 +1115,7 @@ select product_name from products;
 -- qué categoría tiene el tofu?
 select p.product_name, c.category_name
 from products p
-inner join categories c on p.category_id = c.category_id
+         inner join categories c on p.category_id = c.category_id
 where upper(p.product_name) = 'TOFU';
 
 select min(unit_price) as valor_minimo,
@@ -1019,43 +1176,43 @@ order by 2 desc;
 -- cuáles son los productos que son de categoría seafood
 select p.product_id, p.product_name as nombre_producto, c.category_name as nombre_categoria
 from products p
-inner join categories c on p.category_id = c.category_id
+         inner join categories c on p.category_id = c.category_id
 where c.category_name = 'Seafood';
 
 -- cuáles son los códigos de las órdenes y la fecha que realizó la empleada nancy davolio entre 2006 y 2007
 select o.order_id, o.order_date,
        e.last_name || ' ' || e.first_name as primer_nombre
 from employees e
-inner join orders o on o.employee_id = e.employee_id
+         inner join orders o on o.employee_id = e.employee_id
 where e.last_name = 'Davolio'
   and o.order_date between '1996-02-01' and '1996-09-30';
 
 -- left join
 select c.company_name, o.order_date
 from customers as c
-left join orders as o on c.customer_id = o.customer_id;
+         left join orders as o on c.customer_id = o.customer_id;
 
 -- right join
 select e.first_name, e.last_name, o.order_id
 from employees as e
-right join orders as o on e.employee_id = o.employee_id;
+         right join orders as o on e.employee_id = o.employee_id;
 
 -- necesito los códigos y las fechas de órdenes con las que se ha comprado tofu
-select  
-    o.order_id as codigo_orden,        
-    o.order_date as fecha_orden,        
-    o.required_date as fecha_requerida, 
+select
+    o.order_id as codigo_orden,
+    o.order_date as fecha_orden,
+    o.required_date as fecha_requerida,
     o.shipped_date as fecha_envio
 from orders o
-inner join order_details od on o.order_id = od.order_id
-inner join products p on od.product_id = p.product_id
+         inner join order_details od on o.order_id = od.order_id
+         inner join products p on od.product_id = p.product_id
 where lower(p.product_name) = 'tofu'
 order by o.order_date desc;
 
 -- agrupar productos con group by
 select category_name, count(*) as total_products
 from products p
-inner join categories c on c.category_id = p.category_id
+         inner join categories c on c.category_id = p.category_id
 group by category_name
 having count(*) > 9
 order by 2 asc;
@@ -1085,19 +1242,19 @@ select*from products;
 
 
 -- saber la cantida de productos en stock y saber el total de todos los productos 
-select 
-category_id,
-round(avg(unit_price)::NUMERIC,2) as avg_unit_price,
-round(sum(unit_price)) as sum_unit_price
+select
+    category_id,
+    round(avg(unit_price)::NUMERIC,2) as avg_unit_price,
+    round(sum(unit_price)) as sum_unit_price
 from products
 group by category_id;
 
 
 select
-s.company_name,
-count(p.product_id) as num_products_supplied
+    s.company_name,
+    count(p.product_id) as num_products_supplied
 from products as p
-inner join suppliers as s on p.supplier_id = s.supplier_id
+         inner join suppliers as s on p.supplier_id = s.supplier_id
 group by s.company_name
 having count(p.product_id)> 3
 order by num_products_supplied desc;
@@ -1108,12 +1265,12 @@ order by num_products_supplied desc;
 -- ordenes de empleados  que no  vivan en siadle y que hayan realizado mas de 100 ordenes
 
 
-select 
-    e.employee_id, 
-    e.first_name || ' ' || e.last_name as nombre_empleado, 
+select
+    e.employee_id,
+    e.first_name || ' ' || e.last_name as nombre_empleado,
     count(o.order_id) as total_ordenes
 from employees e
-inner join orders o on o.employee_id = e.employee_id
+         inner join orders o on o.employee_id = e.employee_id
 where lower(e.city) <> 'seattle'
 group by e.employee_id, e.first_name, e.last_name
 having count(o.order_id) > 100
@@ -1139,7 +1296,7 @@ cuyo precio unitario sea mayor al promedio general
 
 SELECT p.product_name, p.unit_price AS Productos_con_promedio_mayor, c.category_name
 FROM products p
-INNER JOIN categories c on p.category_id = c.category_id
+         INNER JOIN categories c on p.category_id = c.category_id
 WHERE P.unit_price > (SELECT AVG(unit_price) FROM products);
 
 
@@ -1176,7 +1333,7 @@ BEGIN;
 DELETE FROM order_details WHERE order_id = 11008;
 DELETE FROM orders
 WHERE shipped_date IS NULL
-AND required_date CURRENT_DATE - INTERVAL '2 years';
+  AND required_date CURRENT_DATE - INTERVAL '2 years';
 AND order_id = 11008
 SELECT * FROM order_details WHERE order_id = 11008
 BEGIN
@@ -1193,7 +1350,7 @@ SELECT * FROM products WHERE product_id = 5;
 
 --==========================
 SELECT s.company_name, product_name, unit_price  FROM product p
-INNER JOIN supppliers s ON p.suppplier_id = s.suppplier_id
+                                                          INNER JOIN supppliers s ON p.suppplier_id = s.suppplier_id
 WHERE s.company_name = 'Exotic Liquids';
 
 
@@ -1206,10 +1363,10 @@ eliminar pedidios de empleados que ya no esten activos*/
 BEGIN;
 DELETE FROM deatils_orders WHERE order_id =10248
 DELETE FROM orders o
-USING employees e
+    USING employees e
 WHERE o.employee_id = e.employee_id
-AND e.employee_id = 5
-AND o.order_id = 10248;
+  AND e.employee_id = 5
+  AND o.order_id = 10248;
 
 
 /*
@@ -1220,14 +1377,14 @@ Objetivo: Subir en 15% los precios de productos con poco stock y en 5% los demá
 
 UPDATE products
 -- CASE es como un if 
-SET unit_price = CASE 
+SET unit_price = CASE
 -- cuando ls productos en stock tiene un cantidad < 20 se suve el precio a un 15%
-    WHEN units_in_stock < 0 THEN unit_price * 1.15
-	WHEN units_in_stock < 20 THEN unit_price * 1.1
-	WHEN units_in_stock < 100 THEN unit_price * 1.2
+                     WHEN units_in_stock < 0 THEN unit_price * 1.15
+                     WHEN units_in_stock < 20 THEN unit_price * 1.1
+                     WHEN units_in_stock < 100 THEN unit_price * 1.2
 -- si no se el precio queda con un 5%
-    ELSE unit_price * 1.05
-END
+                     ELSE unit_price * 1.05
+    END
 WHERE category_id = 3;
 
 ----------------=================================
@@ -1243,11 +1400,11 @@ Se usa una subconsulta con GROUP BY para identificar productos con ventas altas.
 UPDATE products p
 SET unit_price = unit_price * 1.10
 FROM (
-    SELECT od.product_id, SUM(od.quantity) AS total_vendido
-    FROM order_details od
-    GROUP BY od.product_id
-    HAVING SUM(od.quantity) > 100
-) v
+         SELECT od.product_id, SUM(od.quantity) AS total_vendido
+         FROM order_details od
+         GROUP BY od.product_id
+         HAVING SUM(od.quantity) > 100
+     ) v
 WHERE p.product_id = v.product_id;
 
 
@@ -1255,34 +1412,34 @@ WHERE p.product_id = v.product_id;
 SELECT product_name
 FROM products
 WHERE category_id IN(
-SELECT category_id FROM categories  WHERE category_name = 'Beverages'
+    SELECT category_id FROM categories  WHERE category_name = 'Beverages'
 );
 
 
-SELECT 
-product_name,
-unit_price IN (SELECT AVG(unit_price) FROM products AS avg_all_products)
+SELECT
+    product_name,
+    unit_price IN (SELECT AVG(unit_price) FROM products AS avg_all_products)
 FROM products;
 
 --
 SELECT p.product_name, c.category_name
 FROM products p
-INNER JOIN categories c ON p.category_id = c.category_id
-INNER JOIN (SELECT product_id,  unit_price, units_in_stock, category_id
-FROM products) x ON x.category_id = c.category_id  AND x.unit_price > 20;
+         INNER JOIN categories c ON p.category_id = c.category_id
+         INNER JOIN (SELECT product_id,  unit_price, units_in_stock, category_id
+                     FROM products) x ON x.category_id = c.category_id  AND x.unit_price > 20;
 
 
 ------------------------------------
 -- subconsulta de empleado y total de ordenes
 
 WITH EmployeeOrders AS(
- SELECT e.employee_id,
-		e.last_name || '' || first_name AS employee_name,
-		COUNT(o.order_id) AS total_orders
-		FROM employees AS e
-		INNER JOIN orders AS o ON e.employee_id = o.employee_id
-		GROUP BY e.employee_id, employee_name
-		)
+    SELECT e.employee_id,
+           e.last_name || '' || first_name AS employee_name,
+           COUNT(o.order_id) AS total_orders
+    FROM employees AS e
+             INNER JOIN orders AS o ON e.employee_id = o.employee_id
+    GROUP BY e.employee_id, employee_name
+)
 SELECT employee_name, total_orders
 FROM EmployeeOrders
 ORDER BY total_orders DESC
@@ -1298,14 +1455,14 @@ precios unitarios de los productos de la categoria Seafood
 */
 
 SELECT product_name, unit_price
-FROM products 
-WHERE unit_price > (SELECT AVG(P.unit_price) 
-					FROM products P
-					INNER JOIN categories c ON p.category_id = c.category_id
-					WHERE category_name = 'Seafood'
-					)
+FROM products
+WHERE unit_price > (SELECT AVG(P.unit_price)
+                    FROM products P
+                             INNER JOIN categories c ON p.category_id = c.category_id
+                    WHERE category_name = 'Seafood'
+)
 
-				ORDER BY unit_price DESC;
+ORDER BY unit_price DESC;
 
 
 
@@ -1315,10 +1472,10 @@ WHERE unit_price > (SELECT AVG(P.unit_price)
 --
 
 CREATE TABLE categories (
-    category_id smallint NOT NULL,
-    category_name character varying(15) NOT NULL,
-    description text,
-    picture bytea
+                            category_id smallint NOT NULL,
+                            category_name character varying(15) NOT NULL,
+                            description text,
+                            picture bytea
 );
 
 select*from categories;
@@ -1328,8 +1485,8 @@ select*from categories;
 --
 
 CREATE TABLE customer_customer_demo (
-    customer_id character varying(5) NOT NULL,
-    customer_type_id character varying(5) NOT NULL
+                                        customer_id character varying(5) NOT NULL,
+                                        customer_type_id character varying(5) NOT NULL
 );
 
 
@@ -1338,8 +1495,8 @@ CREATE TABLE customer_customer_demo (
 --
 
 CREATE TABLE customer_demographics (
-    customer_type_id character varying(5) NOT NULL,
-    customer_desc text
+                                       customer_type_id character varying(5) NOT NULL,
+                                       customer_desc text
 );
 
 
@@ -1348,17 +1505,17 @@ CREATE TABLE customer_demographics (
 --
 
 CREATE TABLE customers (
-    customer_id character varying(5) NOT NULL,
-    company_name character varying(40) NOT NULL,
-    contact_name character varying(30),
-    contact_title character varying(30),
-    address character varying(60),
-    city character varying(15),
-    region character varying(15),
-    postal_code character varying(10),
-    country character varying(15),
-    phone character varying(24),
-    fax character varying(24)
+                           customer_id character varying(5) NOT NULL,
+                           company_name character varying(40) NOT NULL,
+                           contact_name character varying(30),
+                           contact_title character varying(30),
+                           address character varying(60),
+                           city character varying(15),
+                           region character varying(15),
+                           postal_code character varying(10),
+                           country character varying(15),
+                           phone character varying(24),
+                           fax character varying(24)
 );
 
 
@@ -1367,24 +1524,24 @@ CREATE TABLE customers (
 --
 
 CREATE TABLE employees (
-    employee_id smallint NOT NULL,
-    last_name character varying(20) NOT NULL,
-    first_name character varying(10) NOT NULL,
-    title character varying(30),
-    title_of_courtesy character varying(25),
-    birth_date date,
-    hire_date date,
-    address character varying(60),
-    city character varying(15),
-    region character varying(15),
-    postal_code character varying(10),
-    country character varying(15),
-    home_phone character varying(24),
-    extension character varying(4),
-    photo bytea,
-    notes text,
-    reports_to smallint,
-    photo_path character varying(255)
+                           employee_id smallint NOT NULL,
+                           last_name character varying(20) NOT NULL,
+                           first_name character varying(10) NOT NULL,
+                           title character varying(30),
+                           title_of_courtesy character varying(25),
+                           birth_date date,
+                           hire_date date,
+                           address character varying(60),
+                           city character varying(15),
+                           region character varying(15),
+                           postal_code character varying(10),
+                           country character varying(15),
+                           home_phone character varying(24),
+                           extension character varying(4),
+                           photo bytea,
+                           notes text,
+                           reports_to smallint,
+                           photo_path character varying(255)
 );
 
 
@@ -1393,8 +1550,8 @@ CREATE TABLE employees (
 --
 
 CREATE TABLE employee_territories (
-    employee_id smallint NOT NULL,
-    territory_id character varying(20) NOT NULL
+                                      employee_id smallint NOT NULL,
+                                      territory_id character varying(20) NOT NULL
 );
 
 
@@ -1405,11 +1562,11 @@ CREATE TABLE employee_territories (
 --
 
 CREATE TABLE order_details (
-    order_id smallint NOT NULL,
-    product_id smallint NOT NULL,
-    unit_price real NOT NULL,
-    quantity smallint NOT NULL,
-    discount real NOT NULL
+                               order_id smallint NOT NULL,
+                               product_id smallint NOT NULL,
+                               unit_price real NOT NULL,
+                               quantity smallint NOT NULL,
+                               discount real NOT NULL
 );
 
 
@@ -1418,20 +1575,20 @@ CREATE TABLE order_details (
 --
 
 CREATE TABLE orders (
-    order_id smallint NOT NULL,
-    customer_id character varying(5),
-    employee_id smallint,
-    order_date date,
-    required_date date,
-    shipped_date date,
-    ship_via smallint,
-    freight real,
-    ship_name character varying(40),
-    ship_address character varying(60),
-    ship_city character varying(15),
-    ship_region character varying(15),
-    ship_postal_code character varying(10),
-    ship_country character varying(15)
+                        order_id smallint NOT NULL,
+                        customer_id character varying(5),
+                        employee_id smallint,
+                        order_date date,
+                        required_date date,
+                        shipped_date date,
+                        ship_via smallint,
+                        freight real,
+                        ship_name character varying(40),
+                        ship_address character varying(60),
+                        ship_city character varying(15),
+                        ship_region character varying(15),
+                        ship_postal_code character varying(10),
+                        ship_country character varying(15)
 );
 
 
@@ -1440,16 +1597,16 @@ CREATE TABLE orders (
 --
 
 CREATE TABLE products (
-    product_id smallint NOT NULL,
-    product_name character varying(40) NOT NULL,
-    supplier_id smallint,
-    category_id smallint,
-    quantity_per_unit character varying(20),
-    unit_price real,
-    units_in_stock smallint,
-    units_on_order smallint,
-    reorder_level smallint,
-    discontinued integer NOT NULL
+                          product_id smallint NOT NULL,
+                          product_name character varying(40) NOT NULL,
+                          supplier_id smallint,
+                          category_id smallint,
+                          quantity_per_unit character varying(20),
+                          unit_price real,
+                          units_in_stock smallint,
+                          units_on_order smallint,
+                          reorder_level smallint,
+                          discontinued integer NOT NULL
 );
 
 SELECT*FROM PRODUCTS;
@@ -1458,8 +1615,8 @@ SELECT*FROM PRODUCTS;
 --
 
 CREATE TABLE region (
-    region_id smallint NOT NULL,
-    region_description character varying(60) NOT NULL
+                        region_id smallint NOT NULL,
+                        region_description character varying(60) NOT NULL
 );
 
 
@@ -1468,9 +1625,9 @@ CREATE TABLE region (
 --
 
 CREATE TABLE shippers (
-    shipper_id smallint NOT NULL,
-    company_name character varying(40) NOT NULL,
-    phone character varying(24)
+                          shipper_id smallint NOT NULL,
+                          company_name character varying(40) NOT NULL,
+                          phone character varying(24)
 );
 
 
@@ -1480,18 +1637,18 @@ CREATE TABLE shippers (
 --
 
 CREATE TABLE suppliers (
-    supplier_id smallint NOT NULL,
-    company_name character varying(40) NOT NULL,
-    contact_name character varying(30),
-    contact_title character varying(30),
-    address character varying(60),
-    city character varying(15),
-    region character varying(15),
-    postal_code character varying(10),
-    country character varying(15),
-    phone character varying(24),
-    fax character varying(24),
-    homepage text
+                           supplier_id smallint NOT NULL,
+                           company_name character varying(40) NOT NULL,
+                           contact_name character varying(30),
+                           contact_title character varying(30),
+                           address character varying(60),
+                           city character varying(15),
+                           region character varying(15),
+                           postal_code character varying(10),
+                           country character varying(15),
+                           phone character varying(24),
+                           fax character varying(24),
+                           homepage text
 );
 
 
@@ -1500,9 +1657,9 @@ CREATE TABLE suppliers (
 --
 
 CREATE TABLE territories (
-    territory_id character varying(20) NOT NULL,
-    territory_description character varying(60) NOT NULL,
-    region_id smallint NOT NULL
+                             territory_id character varying(20) NOT NULL,
+                             territory_description character varying(60) NOT NULL,
+                             region_id smallint NOT NULL
 );
 
 
@@ -1511,10 +1668,10 @@ CREATE TABLE territories (
 --
 
 CREATE TABLE us_states (
-    state_id smallint NOT NULL,
-    state_name character varying(100),
-    state_abbr character varying(2),
-    state_region character varying(50)
+                           state_id smallint NOT NULL,
+                           state_name character varying(100),
+                           state_abbr character varying(2),
+                           state_region character varying(50)
 );
 
 
@@ -5180,7 +5337,7 @@ ALTER TABLE ONLY customer_customer_demo
 ALTER TABLE ONLY employees
     ADD CONSTRAINT fk_employees_employees FOREIGN KEY (reports_to) REFERENCES employees;
 
-    
+
 --
 -- PostgreSQL database dump complete
 --
